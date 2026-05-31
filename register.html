@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/login_reg.css">
+    <title>Регистрация</title>
+
+    <style>
+        
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+
+    <div class="branding">
+
+        <img src="images/logo.png" class="logo" alt="InviteMEme Logo">
+
+        <h1>InviteMEme</h1>
+
+        <p>
+            Създавай и изпращай покани за презентации
+            чрез шаблони или забавни мемета.
+        </p>
+
+    </div>
+
+
+    <div class="form-container">
+        <h2>Регистрация</h2>
+
+        <form action="register.php" method="POST">
+
+            <label for="faculty_number">Факултетен номер</label>
+            <input type="text" id="faculty_number" name="faculty_number" required>
+
+            <label for="first_name">Име</label>
+            <input type="text" id="first_name" name="first_name" required>
+
+            <label for="last_name">Фамилия</label>
+            <input type="text" id="last_name" name="last_name" required>
+
+            <label for="email">Имейл</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Парола</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirm_password">Потвърди парола</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <button type="submit">Регистрация</button>
+
+        </form>
+
+        <div class="link">
+            <p>Вече имате акаунт? <a href="login.html">Вход</a></p>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
