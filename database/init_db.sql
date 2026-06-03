@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS invitation_templates (
 CREATE TABLE IF NOT EXISTS invitations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    template_id INT NOT NULL,
+    template_id INT NULL,
 
     title VARCHAR(255) NOT NULL,
     presentation_date DATE NOT NULL,
@@ -38,8 +38,6 @@ CREATE TABLE IF NOT EXISTS invitations (
     description TEXT NULL,
     generated_image_path VARCHAR(255) NULL,
 
-    is_sent BOOLEAN DEFAULT FALSE,
-    sent_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id)
@@ -49,13 +47,21 @@ CREATE TABLE IF NOT EXISTS invitations (
         REFERENCES invitation_templates(id)
 );
 
-CREATE TABLE IF NOT EXISTS email_logs (
+CREATE TABLE IF NOT EXISTS invitation_recipients (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     invitation_id INT NOT NULL,
     recipient_email VARCHAR(255) NOT NULL,
-    status ENUM('pending', 'sent', 'failed') NOT NULL,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    status ENUM('pending', 'sent', 'failed')
+        DEFAULT 'pending',
+
+    sent_at DATETIME NULL,
 
     FOREIGN KEY (invitation_id)
         REFERENCES invitations(id)
+        ON DELETE CASCADE,
+
+    -- TO ADD LATER: A recipient can only be associated with a specific invitation once
+    -- UNIQUE (invitation_id, recipient_email)
 );
