@@ -10,12 +10,7 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
 
-    background: linear-gradient(
-        135deg,
-        var(--light-cyan),
-        var(--white),
-        var(--light-orange)
-    );
+    background: var(--light-orange);
 
     min-height: 100vh;
 
@@ -35,9 +30,6 @@ body {
     border-radius: 20px;
 
     overflow: hidden;
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,0.15);
 }
 
 .branding {

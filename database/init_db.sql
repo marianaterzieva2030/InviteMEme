@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS invitation_recipients (
 
     FOREIGN KEY (invitation_id)
         REFERENCES invitations(id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 
     -- TO ADD LATER: A recipient can only be associated with a specific invitation once
     -- UNIQUE (invitation_id, recipient_email)

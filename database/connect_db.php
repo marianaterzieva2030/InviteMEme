@@ -6,10 +6,10 @@ class DatabaseConnection
 
     public function __construct()
     {
-        $db_host = "127.0.0.1"; // or "localhost"
+        $db_host = "localhost";
         $db_name = "inviteme";
         $username = "root";
-        $user_password = "mtSQL13@"; // Adjust if your XAMPP setup has a different password
+        $user_password = "";
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
 
         try {
