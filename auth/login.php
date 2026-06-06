@@ -34,7 +34,7 @@ $db = new DatabaseConnection();
 $pdo = $db->getConnection();
 
 try {
-    $stmt = $pdo->prepare("SELECT id, email, password_hash, role FROM users 
+    $stmt = $pdo->prepare("SELECT id, email, password_hash, role, first_name, last_name FROM users 
                            WHERE email = :email LIMIT 1");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
@@ -50,11 +50,13 @@ try {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_email'] = $user['email'];
     $_SESSION['user_role'] = $user['role'];
+    $_SESSION['first_name'] = $user['first_name'] ?? '';
+    $_SESSION['last_name'] = $user['last_name'] ?? '';
 
     if ($user['role'] === 'teacher') {
-        header('Location: /InviteMEme/home_teacher.html');
+        header('Location: /InviteMEme/home_teacher.php');
     } else {
-        header('Location: /InviteMEme/home_student.html');
+        header('Location: /InviteMEme/home_student.php');
     }
     exit;
 

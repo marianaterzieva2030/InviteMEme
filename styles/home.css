@@ -1,1 +1,127 @@
-/* TODO: Add styles for the home page */
+:root {
+    --orange: #ff9f1c;
+    --light-orange: #ffbf69;
+    --white: #ffffff;
+    --light-cyan: #cbf3f0;
+    --turquoise: #2ec4b6;
+
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: var(--light-cyan);
+    color: #333;
+}
+
+header {
+    background: var(--orange);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+nav a, #home-link {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+nav a:hover, #home-link:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.welcome-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.welcome-card h1 {
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+}
+
+.feature-card h3 {
+    color: var(--turquoise);
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: var(--turquoise);
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+    color: #666;
+}
