@@ -53,7 +53,7 @@ nav a, #home-link {
     transition: 0.3s;
 }
 
-nav a:hover, #home-link:hover {
+nav a:hover {
     background-color: rgba(255,255,255,0.2);
 }
 
@@ -87,11 +87,6 @@ main {
     border-radius: 16px;
     padding: 1.5rem;
     box-shadow: var(--shadow);
-    transition: 0.3s;
-}
-
-.feature-card:hover {
-    transform: translateY(-4px);
 }
 
 .feature-card h3 {
