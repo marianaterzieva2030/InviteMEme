@@ -32,7 +32,7 @@ const canvasData = document.getElementById("canvasData");
 const inviteForm = document.getElementById("inviteForm");
 const shareBtn = document.getElementById("shareBtn");
 
-const lineSpacing = 10;
+const lineSpacing = 5;
 const defaultCanvasWidth = 600;
 const defaultCanvasHeight = 350;
 const maxPreviewWidth = 760;
@@ -151,20 +151,30 @@ function setCanvasStateFromInputs() {
 templateSelect.addEventListener("change", function () {
     const selected = this.selectedOptions[0];
     const imagePath = selected?.dataset?.image || "";
-
+    const description = selected?.dataset?.description || "";
     if (!imagePath) {
         backgroundImage = null;
         drawCanvas();
         return;
     }
+    descriptionInput.value = description;
+    setCanvasStateFromInputs();
+    let normalizedPath = "../" + imagePath;
 
     const img = new Image();
-    img.src = imagePath;
+    img.crossOrigin = 'anonymous';
+    img.src = normalizedPath;
     img.onload = () => {
         backgroundImage = img;
         setCanvasAspect(backgroundImage);
         drawCanvas();
     };
+    img.onerror = (err) => {
+        console.error('Неуспешно зареждане на шаблон:', normalizedPath, err);
+        backgroundImage = null;
+        drawCanvas();
+    };
+    drawCanvas();
 });
 
 imageInput.addEventListener("change", function () {
@@ -315,4 +325,9 @@ shareBtn.addEventListener("click", function () {
 
 setCanvasStateFromInputs();
 drawCanvas();
+
+// If a template is already selected on page load, trigger change to load it
+if (templateSelect && templateSelect.value) {
+    templateSelect.dispatchEvent(new Event('change'));
+}
 

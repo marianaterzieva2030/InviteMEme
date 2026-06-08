@@ -1,0 +1,215 @@
+ :root {
+     --orange: #ff9f1c;
+     --light-orange: #ffbf69;
+     --white: #ffffff;
+     --light-cyan: #cbf3f0;
+     --turquoise: #2ec4b6;
+     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+ }
+
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     font-family: "Segoe UI", sans-serif;
+     background: var(--light-cyan);
+     color: #222;
+ }
+
+ header {
+     background: var(--orange);
+     color: white;
+     padding: 1rem 2rem;
+     box-shadow: var(--shadow);
+ }
+
+ .header-container {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+ }
+
+ .logo {
+     font-size: 1.8rem;
+     font-weight: bold;
+ }
+
+ nav ul {
+     list-style: none;
+     display: flex;
+     gap: 1rem;
+ }
+
+ nav a,
+ #home-link {
+     text-decoration: none;
+     color: white;
+     font-weight: 600;
+     padding: 0.6rem 1rem;
+     border-radius: 8px;
+     transition: 0.3s;
+ }
+
+ nav a:hover {
+     background-color: rgba(255, 255, 255, 0.2);
+ }
+
+ h2 {
+     text-align: center;
+     color: var(--orange);
+     margin-bottom: 10px;
+     font-size: 2rem;
+ }
+
+ .message {
+     max-width: 900px;
+     margin: 0 auto 16px auto;
+     padding: 12px 16px;
+     border-radius: 8px;
+     font-weight: 600;
+ }
+
+ .message-success {
+     background: #e6f8ee;
+     color: #1d5f41;
+     border: 1px solid #b7e5c9;
+ }
+
+ .message-error {
+     background: #ffe6e8;
+     color: #7d1f2c;
+     border: 1px solid #f2c2c9;
+ }
+
+ .editor {
+     display: flex;
+     justify-content: center;
+     flex-wrap: wrap;
+     gap: 20px;
+     align-items: flex-start;
+     max-width: 1600px;
+     margin: 20px auto;
+     padding: 0 25px;
+ }
+
+ .form-panel {
+     flex: 1 1 350px;
+     max-width: 450px;
+     background: var(--white);
+     border-radius: 12px;
+     padding: 10px;
+     box-shadow: var(--shadow);
+ }
+
+ .preview {
+     display: flex;
+     max-width: 800px;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     padding: 16px;
+     background: var(--white);
+     border-radius: 14px;
+     box-shadow: var(--shadow);
+     min-height: 320px;
+ }
+
+ .preview-label {
+     font-weight: 600;
+     margin-bottom: 12px;
+     color: var(--turquoise);
+     text-align: center;
+     width: 100%;
+ }
+
+ .preview-area {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 100%;
+     overflow: hidden;
+     background: #f7fbfb;
+     border-radius: 12px;
+     padding: 12px;
+ }
+
+ #inviteCanvas {
+     display: block;
+     max-width: 100%;
+     height: auto;
+     border-radius: 12px;
+     background: white;
+ }
+
+ .field-group {
+     margin-bottom: 7px;
+     display: flex;
+     flex-direction: column;
+ }
+
+ .field-row {
+     display: flex;
+     gap: 7px;
+     flex-wrap: wrap;
+ }
+
+ .field-row .half {
+     flex: 1 1 180px;
+ }
+
+ label {
+     font-weight: 600;
+     margin-bottom: 3px;
+ }
+
+ input[type="text"],
+ input[type="date"],
+ input[type="time"],
+ input[type="color"],
+ input[type="file"],
+ select,
+ textarea,
+ input[type="range"] {
+     font-size: 12px;
+     padding: 7px;
+     border: 1px solid #e6e6e6;
+     border-radius: 8px;
+     outline: none;
+ }
+
+ input:focus,
+ select:focus,
+ textarea:focus {
+     border-color: var(--turquoise);
+ }
+
+ textarea {
+     min-height: 70px;
+     resize: vertical;
+ }
+
+ .button-row {
+     display: flex;
+     gap: 10px;
+     margin-top: 10px;
+     flex-wrap: wrap;
+ }
+
+ button {
+     flex: 1;
+     padding: 10px 12px;
+     border-radius: 10px;
+     border: none;
+     background: var(--orange);
+     color: var(--white);
+     font-weight: 600;
+     cursor: pointer;
+     transition: 0.3s;
+ }
+
+ button:hover {
+     background: var(--turquoise);
+ }

@@ -6,10 +6,10 @@ if (empty($_SESSION['user_id'])) {
     exit;
 }
 
-require "database/connect_db.php";
+require __DIR__ . "/../database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
-$stmt = $db->prepare("SELECT id, name, image_path FROM invitation_templates WHERE is_active = 1");
+$stmt = $db->prepare("SELECT id, name, image_path, description FROM invitation_templates WHERE is_active = 1");
 $stmt->execute();
 $templates = $stmt->fetchAll();
 
@@ -29,7 +29,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 <head>
     <meta charset="UTF-8">
     <title>Създаване на покани</title>
-    <link rel="stylesheet" href="styles/create_invitation.css">
+    <link rel="stylesheet" href="../styles/create.css">
 </head>
 
 <body>
@@ -43,7 +43,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
                 <ul>
                     <li><a href="#">Статус</a></li>
                     <li><a href="#">Профил</a></li>
-                    <li><a href="auth/logout.php">Изход</a></li>
+                    <li><a href="../auth/logout.php">Изход</a></li>
                 </ul>
             </nav>
         </div>
@@ -65,7 +65,12 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
                     <select id="templateSelect" name="template_id">
                         <option value="">-- Избери шаблон --</option>
                         <?php foreach ($templates as $row): ?>
-                            <option value="<?= $row['id'] ?>" data-image="<?= htmlspecialchars($row['image_path']) ?>"><?= htmlspecialchars($row['name']) ?></option>
+                            <option
+                                value="<?= $row['id'] ?>"
+                                data-image="<?= htmlspecialchars($row['image_path']) ?>"
+                                data-description="<?= htmlspecialchars($row['description']) ?>">
+                                <?= htmlspecialchars($row['name']) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -124,7 +129,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
                 <div class="field-group">
                     <label for="sizeInput">Размер на текста</label>
-                    <input type="range" id="sizeInput" min="18" max="72" value="30">
+                    <input type="range" id="sizeInput" min="10" max="64" value="30">
                 </div>
 
                 <input type="hidden" name="canvas_data" id="canvasData">
@@ -149,7 +154,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
     </div>
     </div>
 
-    <script src="javascript/create_invitation.js"></script>
+    <script src="../javascript/create_invitation.js"></script>
 
 </body>
 
