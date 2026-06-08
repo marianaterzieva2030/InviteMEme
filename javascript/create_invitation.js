@@ -309,20 +309,8 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
     link.click();
 });
 
-shareBtn.addEventListener("click", async function () {
-    const shareText = "Покана: " + title + "\nДата: " + date + " " + time + "\nЗала: " + room + "\nПрезентиращ: " + presenter;
-    if (navigator.canShare) {
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-        const file = new File([blob], "pokana.png", { type: "image/png" });
-        if (navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({ title: "Покана", text: shareText, files: [file] });
-                return;
-            } catch (err) {
-                console.warn("Share failed", err);
-            }
-        }
-    }
+shareBtn.addEventListener("click", function () {
+    window.open("https://www.facebook.com/groups/1682521323128544", "_blank");
 });
 
 setCanvasStateFromInputs();
