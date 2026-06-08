@@ -8,10 +8,10 @@ services:
       - "8080:80"
 
     environment:
-      DB_HOST: db
-      DB_NAME: inviteme
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
     depends_on:
       - db

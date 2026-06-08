@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once("../database/connect_db.php");
+require_once('../database/connect_db.php');
 
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -26,7 +26,7 @@ if (!empty($errors)) {
     foreach ($errors as $err) {
         echo '<p>' . htmlspecialchars($err) . '</p>';
     }
-    echo '<p><a href="/InviteMEme/login.html">Връщане към входа</a></p>';
+    echo '<p><a href="../page_views/login.html">Връщане към входа</a></p>';
     exit;
 }
 
@@ -42,7 +42,7 @@ try {
     if (!$user || !password_verify($password, $user['password_hash'])) {
         http_response_code(401);
         echo '<p>Невалиден имейл или парола.</p>';
-        echo '<p><a href="/InviteMEme/login.html">Опитайте отново</a></p>';
+        echo '<p><a href="../page_views/login.html">Опитайте отново</a></p>';
         exit;
     }
 
@@ -54,9 +54,9 @@ try {
     $_SESSION['last_name'] = $user['last_name'] ?? '';
 
     if ($user['role'] === 'teacher') {
-        header('Location: /InviteMEme/home_teacher.php');
+        header('Location: ../page_views/home_teacher.php');
     } else {
-        header('Location: /InviteMEme/home_student.php');
+        header('Location: ../page_views/home_student.php');
     }
     exit;
 

@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 	exit;
 }
 
-require_once("../database/connect_db.php");
+require_once('../database/connect_db.php');
 
 $faculty_number = trim($_POST['faculty_number'] ?? '');
 $first_name = trim($_POST['first_name'] ?? '');
@@ -34,7 +34,7 @@ if (!empty($errors)) {
 	foreach ($errors as $err) {
 		echo '<p>' . htmlspecialchars($err) . '</p>';
 	}
-	echo '<p><a href="/InviteMEme/register.html">Връщане към регистрацията</a></p>';
+	echo '<p><a href="../page_views/register.html">Връщане към регистрацията</a></p>';
 	exit;
 }
 
@@ -50,7 +50,7 @@ try {
 	if ($existing) {
 		http_response_code(409);
 		echo '<p>Вече съществува акаунт с този имейл.</p>';
-		echo '<p><a href="/InviteMEme/register.html">Пробвайте с друг имейл</a></p>';
+		echo '<p><a href="../page_views/register.html">Пробвайте с друг имейл</a></p>';
 		exit;
 	}
 
@@ -66,7 +66,7 @@ try {
 		'password_hash' => $password_hash
 	]);
 
-	header('Location: /InviteMEme/login.html');
+	header('Location: ../page_views/login.html');
 	exit;
 
 } catch (PDOException $e) {
