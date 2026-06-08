@@ -98,7 +98,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
                 <div class="field-group">
                     <label for="presenterInput">Презентиращ</label>
-                    <input type="text" id="presenterInput" name="presenter" placeholder="Име на презентиращия">
+                    <input type="text" id="presenterInput" name="presenter" placeholder="Име на презентиращия" required>
                 </div>
 
                 <div class="field-group">
