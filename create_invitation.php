@@ -59,7 +59,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
     <div class="editor">
         <div class="form-panel">
-            <form method="POST" action="save_invite.php" enctype="multipart/form-data" id="inviteForm">
+            <form method="POST" action="save_invitation.php" enctype="multipart/form-data" id="inviteForm">
                 <div class="field-group">
                     <label for="templateSelect">Избор на шаблон</label>
                     <select id="templateSelect" name="template_id">
