@@ -6,17 +6,20 @@ class DatabaseConnection
 
     public function __construct()
     {
-        $db_host = "localhost";
-        $db_name = "inviteme";
-        $username = "root";
-        $user_password = "";
-        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
+        $config = require __DIR__ . '/config.php';
+        $dsn =
+            "mysql:host={$config['host']};" .
+            "dbname={$config['dbname']};" .
+            "charset=utf8mb4";
 
         try {
-            $this->connection = new PDO($dsn, $username, $user_password,
+            $this->connection = new PDO(
+                $dsn,
+                $config['username'],
+                $config['password'],
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 ]
             );
         } catch(PDOException $e) {

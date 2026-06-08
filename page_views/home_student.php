@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (empty($_SESSION['user_id'])) {
-    header('Location: /InviteMEme/login.html');
+    header('Location: login.html');
     exit;
 }
 $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? ''));
@@ -13,7 +13,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Начало</title>
-    <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="../styles/home.css">
 </head>
 <body>
 
@@ -29,7 +29,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                 <li><a href="#">Изпращане</a></li>
                 <li><a href="#">Статус</a></li>
                 <li><a href="#">Профил</a></li>
-                <li><a href="auth/logout.php">Изход</a></li>
+                <li><a href="../auth/logout.php">Изход</a></li>
             </ul>
         </nav>
     </div>
