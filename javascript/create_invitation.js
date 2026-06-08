@@ -86,9 +86,6 @@ function getTextLines() {
     if (presenter) {
         lines.push("Презентиращ: " + presenter);
     }
-    // if (descriptionText) {
-    //     lines.push(descriptionText);
-    // }
     if (!lines.length) {
         lines.push("Текст на поканата");
     }

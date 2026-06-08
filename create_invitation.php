@@ -41,8 +41,6 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
             <nav>
                 <ul>
-                    <li><a href="#">Създаване на покана</a></li>
-                    <li><a href="#">Изпращане</a></li>
                     <li><a href="#">Статус</a></li>
                     <li><a href="#">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
@@ -142,7 +140,9 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
         <div class="preview">
             <div class="preview-label">Преглед на поканата</div>
             <div class="preview-area" id="previewArea">
+
                 <canvas id="inviteCanvas" width="600" height="600"></canvas>
+
             </div>
 
         </div>
