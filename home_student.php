@@ -28,9 +28,9 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
         <nav>
             <ul>
                 <li><a href="create_invitation.php">Създаване на покана</a></li>
-                <li><a href="#">Изпращане</a></li>
-                <li><a href="#">Статус</a></li>
-                <li><a href="#">Профил</a></li>
+                <li><a href="send_invitation.php">Изпращане</a></li>
+                <li><a href="status.php">Статус</a></li>
+                <li><a href="profile.php">Профил</a></li>
                 <li><a href="auth/logout.php">Изход</a></li>
             </ul>
         </nav>

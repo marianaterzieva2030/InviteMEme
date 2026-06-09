@@ -14,13 +14,16 @@ if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $img = $_FILES['image'];
-$uploadDir = '../uploads/templates/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+$uploadDir = 'uploads/templates/';
+$relativePath = '../' . $uploadDir;
+if (!is_dir($relativePath)) {
+    mkdir($relativePath, 0755, true);
 }
 $fileName = basename($img['name']);
 $path = $uploadDir . $fileName;
-move_uploaded_file($img['tmp_name'], $path);
+if (!move_uploaded_file($img['tmp_name'], $relativePath . $fileName)) {
+    die("Грешка при качване на файл.");
+}
 
 $stmt = $db->prepare("
     INSERT INTO invitation_templates (name, type, image_path, description, is_active, created_by)

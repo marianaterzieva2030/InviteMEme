@@ -27,10 +27,10 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
 
             <nav>
                 <ul>
-                    <li><a href="#">Създаване на шаблон</a></li>
-                    <li><a href="#">Управление на шаблони</a></li>
-                    <li><a href="#">Статистики</a></li>
-                    <li><a href="#">Профил</a></li>
+                    <li><a href="create_template.php">Създаване на шаблон</a></li>
+                    <li><a href="edit_templates.php">Управление на шаблони</a></li>
+                    <li><a href="stats.php">Статистики</a></li>
+                    <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
             </nav>

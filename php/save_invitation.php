@@ -43,7 +43,7 @@ if ($imageData === false) {
     exit;
 }
 
-$uploadDir = '../uploads/custom/';
+$uploadDir = __DIR__ . '/../uploads/custom/';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
         error_log('save_invitation: failed to create upload dir: ' . $uploadDir);
@@ -63,16 +63,15 @@ if (!is_writable($uploadDir)) {
 }
 
 $filename = 'invite_' . time() . '_' . bin2hex(random_bytes(6)) . '.png';
-$path = $uploadDir . $filename;
-$bytes = file_put_contents($path, $imageData, LOCK_EX);
+$generated_image_path = 'uploads/custom/' . $filename;
+$bytes = file_put_contents($uploadDir . $filename, $imageData, LOCK_EX);
 if ($bytes === false) {
     $err = error_get_last();
-    error_log('save_invitation: failed writing file: ' . $path . ' -- ' . print_r($err, true));
+    error_log('save_invitation: failed writing file: ' . $generated_image_path . ' -- ' . print_r($err, true));
     header('Location: ../create_invitation.php?error=failedwrite');
     exit;
 }
 
-$generated_image_path = $uploadDir . $filename;
 $description_combined = trim(($presenter !== '' ? "Презентиращ: $presenter\n" : '') . $description);
 
 $stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path) VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
@@ -87,5 +86,5 @@ $stmt->execute([
     ':generated_image_path' => $generated_image_path,
 ]);
 
-header('Location: ../create_invitation.php?saved=1');
+header('Location: ../send_invitation.php');
 exit;

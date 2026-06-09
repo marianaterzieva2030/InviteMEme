@@ -159,7 +159,7 @@ templateSelect.addEventListener("change", function () {
     }
     descriptionInput.value = description;
     setCanvasStateFromInputs();
-    let normalizedPath = "../" + imagePath;
+    let normalizedPath = "../" +  imagePath;
 
     const img = new Image();
     img.crossOrigin = 'anonymous';

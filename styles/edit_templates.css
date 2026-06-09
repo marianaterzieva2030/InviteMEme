@@ -121,3 +121,56 @@ footer {
     margin-top: 3rem;
     color: #666;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background: var(--orange);
+    color: white;
+    padding: 14px 18px;
+    text-align: left;
+}
+
+td {
+    padding: 16px 18px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background-color: rgba(203, 243, 240, 0.4);
+}
+
+img.template-preview {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+.actions button,
+.actions select {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.actions button {
+    background: var(--orange);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background: var(--turquoise);
+}

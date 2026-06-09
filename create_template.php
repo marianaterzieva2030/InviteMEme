@@ -27,6 +27,12 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
     <meta charset="UTF-8">
     <title>Създаване на шаблон</title>
     <link rel="stylesheet" href="styles/create.css">
+    <style>
+        .form-panel .field-group { margin-bottom: 1rem; }
+        .form-panel .field-group label { display: block; margin-bottom: .35rem; }
+        .form-panel .radio-row { display: flex; gap: 1rem; align-items: center; }
+        .form-panel .radio-option { display: flex; gap: .4rem; align-items: center; }
+    </style>
 </head>
 
 <body>
@@ -38,15 +44,17 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
 
             <nav>
                 <ul>
-                    <li><a href="#">Управление на шаблони</a></li>
-                    <li><a href="#">Статистики</a></li>
-                    <li><a href="#">Профил</a></li>
+                    <li><a href="#" id="active-menu">Създаване на шаблон</a></li>
+                    <li><a href="edit_templates.php">Управление на шаблони</a></li>
+                    <li><a href="stats.php">Статистики</a></li>
+                    <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <main>
     <h2>Създаване на шаблон</h2>
 
     <?php if ($successMessage): ?>
@@ -112,6 +120,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
             </div>
         </div>
     </div>
+    </main>
     <script src="javascript/create_template.js"></script>
 </body>
 

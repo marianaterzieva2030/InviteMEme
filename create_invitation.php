@@ -18,8 +18,27 @@ $errorMessage = '';
 if (isset($_GET['saved']) && $_GET['saved'] === '1') {
     $successMessage = 'Поканата беше запазена успешно.';
 }
-if (isset($_GET['error']) && $_GET['error'] === 'missing') {
-    $errorMessage = 'Моля, попълнете всички задължителни полета и повторете опита.';
+if (isset($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'missinginfo':
+            $errorMessage = 'Моля, попълнете всички задължителни полета и повторете опита.';
+            break;
+        case 'canvas':
+            $errorMessage = 'Грешка при обработката на изображението. Моля, опитайте отново.';
+            break;
+        case 'noimage':
+            $errorMessage = 'Невалидни данни за изображението. Моля, опитайте отново.';
+            break;
+        case 'failedmkdir':
+            $errorMessage = 'Грешка при създаването на директория за качване. Моля, свържете се с администратора.';
+            break;
+        case 'notwritable':
+            $errorMessage = 'Директорията за качване на изображението няма права за запис. Моля, свържете се с администратора.';
+            break;
+        default:
+            $errorMessage = 'Възникна грешка. Моля, опитайте отново.';
+    }
+    
 }
 ?>
 
@@ -41,14 +60,16 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
             <nav>
                 <ul>
-                    <li><a href="#">Статус</a></li>
-                    <li><a href="#">Профил</a></li>
+                    <li><a href="#" id="active-menu">Създаване на покана</a></li>
+                    <li><a href="send_invitation.php">Изпращане</a></li>
+                    <li><a href="status.php">Статус</a></li>
+                    <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-
+    
     <h2>Създаване на покана</h2>
 
     <?php if ($successMessage): ?>
@@ -152,7 +173,6 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
             </div>
 
         </div>
-    </div>
     </div>
 
     <script src="javascript/create_invitation.js"></script>
