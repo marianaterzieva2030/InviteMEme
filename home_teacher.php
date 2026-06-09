@@ -14,7 +14,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Начало - Преподавател</title>
-    <link rel="stylesheet" href="../styles/home.css">
+    <link rel="stylesheet" href="styles/home.css">
 </head>
 
 <body>
@@ -31,7 +31,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     <li><a href="#">Управление на шаблони</a></li>
                     <li><a href="#">Статистики</a></li>
                     <li><a href="#">Профил</a></li>
-                    <li><a href="../auth/logout.php">Изход</a></li>
+                    <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
             </nav>
         </div>
@@ -55,7 +55,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Създайте нов стандартен или meme шаблон
                     за студентите.
                 </p>
-                <a href="../php/create_template.php" class="btn">Създай</a>
+                <a href="create_template.php" class="btn">Създай</a>
             </div>
 
             <div class="feature-card">

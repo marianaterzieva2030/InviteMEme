@@ -34,7 +34,7 @@ if (!empty($errors)) {
 	foreach ($errors as $err) {
 		echo '<p>' . htmlspecialchars($err) . '</p>';
 	}
-	echo '<p><a href="../page_views/register.html">Връщане към регистрацията</a></p>';
+	echo '<p><a href="../register.html">Връщане към регистрацията</a></p>';
 	exit;
 }
 
@@ -50,7 +50,7 @@ try {
 	if ($existing) {
 		http_response_code(409);
 		echo '<p>Вече съществува акаунт с този имейл.</p>';
-		echo '<p><a href="../page_views/register.html">Пробвайте с друг имейл</a></p>';
+		echo '<p><a href="../register.html">Пробвайте с друг имейл</a></p>';
 		exit;
 	}
 
@@ -66,7 +66,7 @@ try {
 		'password_hash' => $password_hash
 	]);
 
-	header('Location: ../page_views/login.html');
+	header('Location: ../login.html');
 	exit;
 
 } catch (PDOException $e) {

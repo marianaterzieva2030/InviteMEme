@@ -6,15 +6,15 @@ error_reporting(E_ALL);
 session_start();
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: ./page_views/login.html');
+    header('Location: ../login.html');
     exit;
 }
 
-require_once __DIR__ . '/database/connect_db.php';
+require '../database/connect_db.php';
 $db = (new DatabaseConnection())->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: create_invitation.php');
+    header('Location: ../create_invitation.php');
     exit;
 }
 
@@ -28,26 +28,26 @@ $description = trim($_POST['description'] ?? '');
 $canvas_data = $_POST['canvas_data'] ?? '';
 
 if ($title === '' || $presentation_date === '' || $presentation_time === '' || $room === '' || $canvas_data === '') {
-    header('Location: create_invitation.php?error=missinginfo');
+    header('Location: ../create_invitation.php?error=missinginfo');
     exit;
 }
 
 if (!preg_match('/^data:image\/png;base64,(.+)$/', $canvas_data, $matches)) {
-    header('Location: create_invitation.php?error=canvas');
+    header('Location: ../create_invitation.php?error=canvas');
     exit;
 }
 
 $imageData = base64_decode($matches[1]);
 if ($imageData === false) {
-    header('Location: create_invitation.php?error=noimage');
+    header('Location: ../create_invitation.php?error=noimage');
     exit;
 }
 
-$uploadDir = 'uploads/custom/';
+$uploadDir = '../uploads/custom/';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
         error_log('save_invitation: failed to create upload dir: ' . $uploadDir);
-        header('Location: create_invitation.php?error=failedmkdir');
+        header('Location: ../create_invitation.php?error=failedmkdir');
         exit;
     }
 }
@@ -57,7 +57,7 @@ if (!is_writable($uploadDir)) {
     @chmod($uploadDir, 0777);
     if (!is_writable($uploadDir)) {
         error_log('save_invitation: upload dir not writable: ' . $uploadDir);
-        header('Location: create_invitation.php?error=notwritable');
+        header('Location: ../create_invitation.php?error=notwritable');
         exit;
     }
 }
@@ -68,7 +68,7 @@ $bytes = file_put_contents($path, $imageData, LOCK_EX);
 if ($bytes === false) {
     $err = error_get_last();
     error_log('save_invitation: failed writing file: ' . $path . ' -- ' . print_r($err, true));
-    header('Location: create_invitation.php?error=failedwrite');
+    header('Location: ../create_invitation.php?error=failedwrite');
     exit;
 }
 
@@ -87,5 +87,5 @@ $stmt->execute([
     ':generated_image_path' => $generated_image_path,
 ]);
 
-header('Location: create_invitation.php?saved=1');
+header('Location: ../create_invitation.php?saved=1');
 exit;

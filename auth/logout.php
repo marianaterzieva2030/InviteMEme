@@ -22,7 +22,7 @@ if (ini_get('session.use_cookies')) {
 // Destroy the session data on the server.
 session_destroy();
 
-header('Location: ../page_views/login.html');
+header('Location: ../login.html');
 exit;
 
 ?>

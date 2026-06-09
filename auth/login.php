@@ -26,7 +26,7 @@ if (!empty($errors)) {
     foreach ($errors as $err) {
         echo '<p>' . htmlspecialchars($err) . '</p>';
     }
-    echo '<p><a href="../page_views/login.html">Връщане към входа</a></p>';
+    echo '<p><a href="../login.html">Връщане към входа</a></p>';
     exit;
 }
 
@@ -42,7 +42,7 @@ try {
     if (!$user || !password_verify($password, $user['password_hash'])) {
         http_response_code(401);
         echo '<p>Невалиден имейл или парола.</p>';
-        echo '<p><a href="../page_views/login.html">Опитайте отново</a></p>';
+        echo '<p><a href="../login.html">Опитайте отново</a></p>';
         exit;
     }
 
@@ -54,9 +54,9 @@ try {
     $_SESSION['last_name'] = $user['last_name'] ?? '';
 
     if ($user['role'] === 'teacher') {
-        header('Location: ../page_views/home_teacher.php');
+        header('Location: ../home_teacher.php');
     } else {
-        header('Location: ../page_views/home_student.php');
+        header('Location: ../home_student.php');
     }
     exit;
 

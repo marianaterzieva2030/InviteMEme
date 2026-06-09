@@ -2,16 +2,16 @@
 session_start();
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: /InviteMEme/login.html');
+    header('Location: login.html');
     exit;
 }
 
 if (($_SESSION['user_role'] ?? '') !== 'teacher') {
-    header('Location: /InviteMEme/no_access.php');
+    header('Location: login.html');
     exit;
 }
 
-require __DIR__ . "/../database/connect_db.php";
+require "database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
 $successMessage = '';
@@ -26,7 +26,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
 <head>
     <meta charset="UTF-8">
     <title>Създаване на шаблон</title>
-    <link rel="stylesheet" href="../styles/create.css">
+    <link rel="stylesheet" href="styles/create.css">
 </head>
 
 <body>
@@ -41,7 +41,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
                     <li><a href="#">Управление на шаблони</a></li>
                     <li><a href="#">Статистики</a></li>
                     <li><a href="#">Профил</a></li>
-                    <li><a href="../auth/logout.php">Изход</a></li>
+                    <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
             </nav>
         </div>
@@ -55,7 +55,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
 
     <div class="editor">
         <div class="form-panel">
-            <form action="save_template.php" method="POST" enctype="multipart/form-data">
+            <form action="php/save_template.php" method="POST" enctype="multipart/form-data">
 
                 <div class="field-group">
                     <label for="name">Име на шаблона</label>
@@ -112,7 +112,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
             </div>
         </div>
     </div>
-    <script src="../javascript/create_template.js"></script>
+    <script src="javascript/create_template.js"></script>
 </body>
 
 </html>

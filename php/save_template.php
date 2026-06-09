@@ -14,13 +14,13 @@ if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $img = $_FILES['image'];
-$uploadDir = __DIR__ . "/../templates/";
+$uploadDir = '../uploads/templates/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 $fileName = basename($img['name']);
-$path = "templates/" . $fileName;
-move_uploaded_file($img['tmp_name'], $uploadDir . $fileName);
+$path = $uploadDir . $fileName;
+move_uploaded_file($img['tmp_name'], $path);
 
 $stmt = $db->prepare("
     INSERT INTO invitation_templates (name, type, image_path, description, is_active, created_by)
@@ -36,5 +36,5 @@ $stmt->execute([
     ':created_by' => $created_by
 ]);
 
-header("Location: create_template.php?saved=1");
+header("Location: ../create_template.php?saved=1");
 exit;
