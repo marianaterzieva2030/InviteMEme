@@ -1,12 +1,16 @@
 <?php
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: /InviteMEme/login.html');
+    header('Location: ./page_views/login.html');
     exit;
 }
 
-require "database/connect_db.php";
+require_once __DIR__ . '/database/connect_db.php';
 $db = (new DatabaseConnection())->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -24,34 +28,51 @@ $description = trim($_POST['description'] ?? '');
 $canvas_data = $_POST['canvas_data'] ?? '';
 
 if ($title === '' || $presentation_date === '' || $presentation_time === '' || $room === '' || $canvas_data === '') {
-    header('Location: create_invitation.php?error=missing');
+    header('Location: create_invitation.php?error=missinginfo');
     exit;
 }
 
 if (!preg_match('/^data:image\/png;base64,(.+)$/', $canvas_data, $matches)) {
-    header('Location: create_invitation.php?error=missing');
+    header('Location: create_invitation.php?error=canvas');
     exit;
 }
 
 $imageData = base64_decode($matches[1]);
 if ($imageData === false) {
-    header('Location: create_invitation.php?error=missing');
+    header('Location: create_invitation.php?error=noimage');
     exit;
 }
 
-$uploadDir = __DIR__ . '/images/invitations';
+$uploadDir = 'uploads/custom/';
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    if (!mkdir($uploadDir, 0777, true)) {
+        error_log('save_invitation: failed to create upload dir: ' . $uploadDir);
+        header('Location: create_invitation.php?error=failedmkdir');
+        exit;
+    }
+}
+
+// Ensure directory is writable by PHP
+if (!is_writable($uploadDir)) {
+    @chmod($uploadDir, 0777);
+    if (!is_writable($uploadDir)) {
+        error_log('save_invitation: upload dir not writable: ' . $uploadDir);
+        header('Location: create_invitation.php?error=notwritable');
+        exit;
+    }
 }
 
 $filename = 'invite_' . time() . '_' . bin2hex(random_bytes(6)) . '.png';
-$path = $uploadDir . '/' . $filename;
-if (file_put_contents($path, $imageData) === false) {
-    header('Location: create_invitation.php?error=missing');
+$path = $uploadDir . $filename;
+$bytes = file_put_contents($path, $imageData, LOCK_EX);
+if ($bytes === false) {
+    $err = error_get_last();
+    error_log('save_invitation: failed writing file: ' . $path . ' -- ' . print_r($err, true));
+    header('Location: create_invitation.php?error=failedwrite');
     exit;
 }
 
-$generated_image_path = 'images/invitations/' . $filename;
+$generated_image_path = $uploadDir . $filename;
 $description_combined = trim(($presenter !== '' ? "Презентиращ: $presenter\n" : '') . $description);
 
 $stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path) VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");

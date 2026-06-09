@@ -25,7 +25,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
 
         <nav>
             <ul>
-                <li><a href="#">Създаване на покана</a></li>
+                <li><a href="../create_invitation.php">Създаване на покана</a></li>
                 <li><a href="#">Изпращане</a></li>
                 <li><a href="#">Статус</a></li>
                 <li><a href="#">Профил</a></li>
@@ -53,7 +53,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                 Изберете шаблон или качете собствено изображение,
                 добавете текст и експортирайте като PNG.
             </p>
-            <a href="#" class="btn">Създай</a>
+            <a href="../create_invitation.php" class="btn">Създай</a>
         </div>
 
         <div class="feature-card">

@@ -9,4 +9,6 @@ $pdo = $db->getConnection();
 
 echo "Connected successfully!";
 
+echo exec('whoami');
+
 ?>

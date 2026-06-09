@@ -2,7 +2,7 @@
 session_start();
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: /InviteMEme/login.html');
+    header('Location: ./page_views/login.html');
     exit;
 }
 
@@ -36,7 +36,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="#">InviteMEme</a>
+                <a id="home-link" href="./page_views/home_student.php">InviteMEme</a>
             </div>
 
             <nav>
@@ -48,6 +48,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
             </nav>
         </div>
     </header>
+
     <h2>Създаване на покана</h2>
 
     <?php if ($successMessage): ?>
@@ -59,7 +60,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'missing') {
 
     <div class="editor">
         <div class="form-panel">
-            <form method="POST" action="save_invite.php" enctype="multipart/form-data" id="inviteForm">
+            <form method="POST" action="save_invitation.php" enctype="multipart/form-data" id="inviteForm">
                 <div class="field-group">
                     <label for="templateSelect">Избор на шаблон</label>
                     <select id="templateSelect" name="template_id">
