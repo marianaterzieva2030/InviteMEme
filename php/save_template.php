@@ -33,7 +33,7 @@ $stmt = $db->prepare("
 $stmt->execute([
     ':name' => $name,
     ':type' => $type,
-    ':image_path' => $path,
+    ':image_path' => 'uploads/templates/' . $fileName,
     ':description' => $description,
     ':is_active' => $is_active,
     ':created_by' => $created_by

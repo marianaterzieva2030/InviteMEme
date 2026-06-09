@@ -8,6 +8,7 @@ let date = "";
 let time = "";
 let room = "";
 let presenter = "";
+let facultyNumber = "";
 let descriptionText = "";
 let textX = 30;
 let textY = 30;
@@ -24,6 +25,7 @@ const dateInput = document.getElementById("dateInput");
 const timeInput = document.getElementById("timeInput");
 const roomInput = document.getElementById("roomInput");
 const presenterInput = document.getElementById("presenterInput");
+const facultyNumberInput = document.getElementById("facultyNumberInput");
 const descriptionInput = document.getElementById("descriptionInput");
 const colorInput = document.getElementById("colorInput");
 const sizeInput = document.getElementById("sizeInput");
@@ -86,6 +88,9 @@ function getTextLines() {
     if (presenter) {
         lines.push("Презентиращ: " + presenter);
     }
+    if (facultyNumber) {
+        lines.push("Факултетен номер: " + facultyNumber);
+    }
     if (!lines.length) {
         lines.push("Текст на поканата");
     }
@@ -145,6 +150,7 @@ function setCanvasStateFromInputs() {
     time = timeInput.value;
     room = roomInput.value;
     presenter = presenterInput.value;
+    facultyNumber = facultyNumberInput.value;
     descriptionText = descriptionInput.value;
 }
 
@@ -159,7 +165,8 @@ templateSelect.addEventListener("change", function () {
     }
     descriptionInput.value = description;
     setCanvasStateFromInputs();
-    let normalizedPath = "../" +  imagePath;
+    // Normalize stored path: remove any leading '../' so it's web-relative
+    let normalizedPath = imagePath.replace(/^\.\.\//, '');
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -201,6 +208,7 @@ dateInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanv
 timeInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
 roomInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
 presenterInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
+facultyNumberInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
 descriptionInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
 colorInput.addEventListener("input", drawCanvas);
 sizeInput.addEventListener("input", drawCanvas);

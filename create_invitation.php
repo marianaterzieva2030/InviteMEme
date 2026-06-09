@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 require "database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
-$stmt = $db->prepare("SELECT id, name, image_path, description FROM invitation_templates WHERE is_active = 1");
+$stmt = $db->prepare("SELECT id, name, image_path, type, description FROM invitation_templates WHERE is_active = 1");
 $stmt->execute();
 $templates = $stmt->fetchAll();
 
@@ -90,6 +90,7 @@ if (isset($_GET['error'])) {
                             <option
                                 value="<?= $row['id'] ?>"
                                 data-image="<?= htmlspecialchars($row['image_path']) ?>"
+                                data-type="<?= htmlspecialchars($row['type']) ?>"
                                 data-description="<?= htmlspecialchars($row['description']) ?>">
                                 <?= htmlspecialchars($row['name']) ?>
                             </option>
@@ -126,6 +127,11 @@ if (isset($_GET['error'])) {
                 <div class="field-group">
                     <label for="presenterInput">Презентиращ</label>
                     <input type="text" id="presenterInput" name="presenter" placeholder="Име на презентиращия" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="faculty_number">Факултетен номер</label>
+                    <input type="text" id="facultyNumberInput" name="faculty_number" placeholder="Факултетен номер" required>
                 </div>
 
                 <div class="field-group">
