@@ -1,0 +1,40 @@
+<?php
+session_start();
+require __DIR__ . "/../database/connect_db.php";
+$db = (new DatabaseConnection())->getConnection();
+
+$name = $_POST['name'];
+$type = $_POST['type'];
+$description = $_POST['description'] ?? null;
+$is_active = $_POST['is_active'];
+$created_by = $_SESSION['user_id'];
+
+if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    die("Няма качено изображение.");
+}
+
+$img = $_FILES['image'];
+$uploadDir = __DIR__ . "/../templates/";
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
+$fileName = basename($img['name']);
+$path = "templates/" . $fileName;
+move_uploaded_file($img['tmp_name'], $uploadDir . $fileName);
+
+$stmt = $db->prepare("
+    INSERT INTO invitation_templates (name, type, image_path, description, is_active, created_by)
+    VALUES (:name, :type, :image_path, :description, :is_active, :created_by)
+");
+
+$stmt->execute([
+    ':name' => $name,
+    ':type' => $type,
+    ':image_path' => $path,
+    ':description' => $description,
+    ':is_active' => $is_active,
+    ':created_by' => $created_by
+]);
+
+header("Location: create_template.php?saved=1");
+exit;

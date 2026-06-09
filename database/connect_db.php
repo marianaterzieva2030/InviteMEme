@@ -22,7 +22,7 @@ class DatabaseConnection
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 ]
             );
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }
     }
@@ -32,5 +32,3 @@ class DatabaseConnection
         return $this->connection;
     }
 }
-
-?>
