@@ -9,14 +9,6 @@ function initializeDatabase(PDO $db): void
         AND table_name = 'users'
     ");
 
-    echo "<h1>Tables</h1>";
-
-    $stmt = $db->query("SHOW TABLES");
-
-    echo "<pre>";
-    print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
-    echo "</pre>";
-
     if ($stmt->fetchColumn()) {
         return;
     }
