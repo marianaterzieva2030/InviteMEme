@@ -3,9 +3,16 @@ require_once 'database/connect_db.php';
 require_once 'init_app.php';
 
 $db = (new DatabaseConnection())->getConnection();
+echo "<h1>Users</h1>";
 
-initializeDatabase($db);
+$stmt = $db->query("SELECT * FROM users");
 
-header("Location: login.html");
+echo "<pre>";
+print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
+echo "</pre>";
+
+// initializeDatabase($db);
+
+// header("Location: login.html");
 exit;
 ?>
