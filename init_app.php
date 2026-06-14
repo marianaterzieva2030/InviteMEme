@@ -9,9 +9,21 @@ function initializeDatabase(PDO $db): void
         AND table_name = 'users'
     ");
 
-    if ($stmt->fetchColumn()) {
+    $count = $stmt->fetchColumn();
+
+    echo "Users table exists: " . $count . "<br>";
+
+    if ($count) {
+        echo "Skipping initialization<br>";
         return;
     }
+
+    // if ($stmt->fetchColumn()) {
+    //     return;
+    // }
+
+    echo "Running initialization<br>";
+
 
     $db->exec("CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,

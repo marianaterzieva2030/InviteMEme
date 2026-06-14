@@ -6,14 +6,6 @@ $db = (new DatabaseConnection())->getConnection();
 
 initializeDatabase($db);
 
-echo "<h1>Users</h1>";
-$stmt = $db->query("SELECT * FROM users");
-
-echo "<pre>";
-print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
-echo "</pre>";
-
-
 // header("Location: login.html");
 exit;
 ?>
