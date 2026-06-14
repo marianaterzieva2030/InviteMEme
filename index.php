@@ -13,17 +13,8 @@ initializeDatabase($db);
 
 echo "<pre>";
 
-echo "DOCUMENT_ROOT = " . $_SERVER['DOCUMENT_ROOT'] . "\n";
-
-echo "custom files:\n";
-print_r(glob(__DIR__ . '/uploads/custom/*'));
-
-$stmt = $db->query("
-SELECT id,title,generated_image_path
-FROM invitations
-");
-
-print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
+echo "PHP user: " . get_current_user() . "\n";
+echo "UID: " . getmyuid() . "\n";
 
 echo "</pre>";
 
