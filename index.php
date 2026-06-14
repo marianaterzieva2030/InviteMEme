@@ -11,20 +11,22 @@ initializeDatabase($db);
 // $teacher = $stmt->fetch();
 // echo "Проверка за съществуващ учител: " . ($teacher ? "Намерен " . $teacher['email'] : "Не е намерен") . "<br>";
 
-$dirs = [
-    __DIR__ . '/uploads',
-    __DIR__ . '/uploads/custom',
-    __DIR__ . '/uploads/templates'
-];
+echo "<pre>";
 
-foreach ($dirs as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-    }
+echo "DOCUMENT_ROOT = " . $_SERVER['DOCUMENT_ROOT'] . "\n";
 
-    @chmod($dir, 0777);
-}
+echo "custom files:\n";
+print_r(glob(__DIR__ . '/uploads/custom/*'));
 
-header("Location: login.html");
+$stmt = $db->query("
+SELECT id,title,generated_image_path
+FROM invitations
+");
+
+print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
+
+echo "</pre>";
+
+// header("Location: login.html");
 exit;
 ?>
