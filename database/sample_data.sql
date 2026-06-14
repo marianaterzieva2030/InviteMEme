@@ -1,6 +1,6 @@
 -- Sample data for InviteME database. Insert through 'SQL' menu in XAMPP's phpmyadmin.
 
-USE inviteme;
+USE DATABASE();
 
 -- TODO: add sample data
 INSERT INTO users
