@@ -6,7 +6,7 @@ class DatabaseConnection
 
     public function __construct()
     {
-        $config = require __DIR__ . '/config.php';
+        $config = require 'config.php';
         $dsn =
             "mysql:host={$config['host']};" .
             "dbname={$config['dbname']};" .

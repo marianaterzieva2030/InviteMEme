@@ -30,7 +30,6 @@ foreach ($invitations as $inv) {
     } elseif ($counts['sent'] > 0 && $counts['failed'] === 0) {
         $agg = 'sent';
     } elseif ($counts['sent'] > 0 && $counts['failed'] > 0) {
-        // mixed results: show 'sent/failed'
         $agg = 'mixed';
     } else {
         $agg = 'pending';
@@ -69,7 +68,7 @@ foreach ($invitations as $inv) {
     <main>
         <div class="welcome-card">
             <h1>Статус на поканите</h1>
-            <p class="small-note">Тук са показани всички запазени покани статусът им.</p>
+            <p class="small-note">Тук са показани всички запазени покани и статусът им.</p>
 
             <table>
                 <thead>
@@ -115,15 +114,13 @@ foreach ($invitations as $inv) {
                                     <?php else: ?>
                                         <strong>Смесено</strong>
                                     <?php endif; ?>
-                                    <div style="font-size:0.85rem;color:#666;margin-top:6px;">
+                                    <div style="font-size:0.85rem; color:#666; margin-top:6px;">
                                         <?= $counts['sent'] ?> изпратени / <?= $counts['failed'] ?> неуспешни / <?= $counts['pending'] ?> очакващи
                                     </div>
                                 </td>
                                 <td class="actions">
                                     <?php if ($img && file_exists($img)): ?>
                                         <a class="btn" href="<?= htmlspecialchars($img) ?>" download>Изтегли PNG</a>
-                                    <?php elseif ($img): ?>
-                                        <a class="btn" href="<?= htmlspecialchars($img) ?>" target="_blank">Отвори изображение</a>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>

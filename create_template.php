@@ -39,7 +39,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="#">InviteMEme</a>
+                <a id="home-link" href="home_teacher.php">InviteMEme</a>
             </div>
 
             <nav>
@@ -55,7 +55,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
     </header>
 
     <main>
-    <h2>Създаване на шаблон</h2>
+    <h2><br>Създаване на шаблон</h2>
 
     <?php if ($successMessage): ?>
         <div class="message message-success"><?= htmlspecialchars($successMessage) ?></div>

@@ -36,7 +36,7 @@ $rows = $stmt->fetchAll();
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="#">InviteMEme</a>
+                <a id="home-link" href="home_teacher.php">InviteMEme</a>
             </div>
 
             <nav>
@@ -51,7 +51,7 @@ $rows = $stmt->fetchAll();
         </div>
     </header>
     <main>
-        <h2>Статистики: запазени покани и изпратени имейли</h2>
+        <h2>Статистики: запазени покани и изпратени имейли</h2> <br>
         <?php if (empty($rows)): ?>
             <p>Няма записи.</p>
         <?php else: ?>

@@ -61,7 +61,7 @@ $templates = $q->fetchAll();
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="#">InviteMEme</a>
+                <a id="home-link" href="home_teacher.php">InviteMEme</a>
             </div>
 
             <nav>

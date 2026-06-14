@@ -59,7 +59,7 @@ nav a:hover, #active-menu {
 
 h2 {
     text-align: center;
-    color: var(--orange);
+    color: black;
     margin-bottom: 10px;
     font-size: 2rem;
 }

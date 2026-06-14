@@ -70,7 +70,7 @@ if (isset($_GET['error'])) {
         </div>
     </header>
     
-    <h2>Създаване на покана</h2>
+    <h2><br>Създаване на покана</h2>
 
     <?php if ($successMessage): ?>
         <div class="message message-success"><?= htmlspecialchars($successMessage) ?></div>

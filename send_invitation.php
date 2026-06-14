@@ -144,7 +144,7 @@ $invitations = $list->fetchAll();
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="#">InviteMEme</a>
+                <a id="home-link" href="home_student.php">InviteMEme</a>
             </div>
 
         <nav>
@@ -159,7 +159,7 @@ $invitations = $list->fetchAll();
     </div>
 </header>
     <main>
-        <h2>Вашите създадени покани</h2>
+        <h2>Вашите създадени покани</h2> <br>
         <?php if ($message): ?><p><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
         <?php if (empty($invitations)): ?>
             <p>Нямате запазени покани.</p>
