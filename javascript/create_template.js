@@ -2,30 +2,15 @@ const canvas = document.getElementById("inviteCanvas");
 const ctx = canvas.getContext("2d");
 
 let backgroundImage = null;
-let memeText = "";
-let textX = 30;
-let textY = 30;
-let isDragging = false;
-const dragOffset = { x: 0, y: 0 };
+const defaultCanvasWidth = 600;
+const defaultCanvasHeight = 350;
+const maxPreviewSize = 600;
+
 
 const imageInput = document.getElementById("image");
 const nameInput = document.getElementById("name");
-const descriptionInput = document.getElementById("description");
-
-const memeFields = document.getElementById("memeFields");
 
 const typeRadios = document.querySelectorAll("input[name='type']");
-
-typeRadios.forEach(radio => {
-    radio.addEventListener("change", function () {
-        memeFields.style.display = this.value === "meme" ? "block" : "none";
-        drawCanvas();
-    });
-});
-
-function setState() {
-    memeText = descriptionInput ? descriptionInput.value : "";
-}
 
 function drawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -41,10 +26,37 @@ function drawCanvas() {
     ctx.font = "24px Arial";
 
     const isMeme = document.querySelector("input[name='type']:checked")?.value === "meme";
+}
 
-    if (isMeme && memeText) {
-        ctx.fillText(memeText, textX, textY);
+function setCanvasAspect(img) {
+    if (!img) {
+        canvas.width = defaultCanvasWidth;
+        canvas.height = defaultCanvasHeight;
+        return;
     }
+
+    let width = img.width;
+    let height = img.height;
+
+    let ratio;
+
+    if (height > width) {
+
+        ratio = maxPreviewSize / height;
+
+        height = maxPreviewSize;
+        width = Math.round(width * ratio);
+
+    } else {
+
+        ratio = maxPreviewSize / width;
+
+        width = maxPreviewSize;
+        height = Math.round(height * ratio);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
 }
 
 imageInput.addEventListener("change", function () {
@@ -52,21 +64,18 @@ imageInput.addEventListener("change", function () {
     if (!file) return;
 
     const img = new Image();
-    const url = URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(file);
 
+    img.src = objectUrl;
     img.onload = () => {
         backgroundImage = img;
-        URL.revokeObjectURL(url);
-
-        canvas.width = img.width;
-        canvas.height = img.height;
-
+        URL.revokeObjectURL(objectUrl);
+        setCanvasAspect(backgroundImage);
         drawCanvas();
     };
 
-    img.src = url;
-});
 
+});
 
 setState();
 drawCanvas();

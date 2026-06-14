@@ -22,18 +22,42 @@ $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))
 ?>
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Профил</title>
     <link rel="stylesheet" href="styles/home.css">
     <style>
-        .profile-card { background: #fff; padding:1.5rem; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width:720px; margin:1rem auto; }
-        .profile-row { display:flex; gap:1rem; padding:.5rem 0; }
-        .profile-key { width:180px; font-weight:700; color:#555; }
-        h2 { text-align:center; margin-bottom:1.5rem; color:#333; }
+        .profile-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            max-width: 720px;
+            margin: 1rem auto;
+        }
+
+        .profile-row {
+            display: flex;
+            gap: 1rem;
+            padding: .5rem 0;
+        }
+
+        .profile-key {
+            width: 180px;
+            font-weight: 700;
+            color: #555;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -67,12 +91,39 @@ $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))
     <main>
         <h2>Моят профил</h2>
         <div class="profile-card">
-            <div class="profile-row"><div class="profile-key">Име</div><div><?php echo htmlspecialchars($fullName); ?></div></div>
-            <div class="profile-row"><div class="profile-key">Факултетен номер</div><div><?php echo htmlspecialchars($user['faculty_number'] ?? ''); ?></div></div>
-            <div class="profile-row"><div class="profile-key">Имейл</div><div><?php echo htmlspecialchars($user['email']); ?></div></div>
-            <div class="profile-row"><div class="profile-key">Роля</div><div><?php echo htmlspecialchars($user['role']); ?></div></div>
-            <div class="profile-row"><div class="profile-key">Регистриран на</div><div><?php echo htmlspecialchars($user['created_at']); ?></div></div>
+            <div class="profile-row">
+                <div class="profile-key">Име</div>
+                <div><?php echo htmlspecialchars($fullName); ?></div>
+            </div>
+            <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'student')): ?>
+                <div class="profile-row">
+                    <div class="profile-key">Факултетен номер</div>
+                    <div><?php echo htmlspecialchars($user['faculty_number'] ?? ''); ?></div>
+                </div>
+            <?php endif; ?>
+            <div class="profile-row">
+                <div class="profile-key">Имейл</div>
+                <div><?php echo htmlspecialchars($user['email']); ?></div>
+            </div>
+            <?php
+            $roleText = $user['role'];
+
+            if ($roleText === 'student') {
+                $roleText = 'Студент';
+            } elseif ($roleText === 'teacher') {
+                $roleText = 'Преподавател';
+            }
+            ?>
+            <div class="profile-row">
+                <div class="profile-key">Роля</div>
+                <div><?php echo htmlspecialchars($roleText); ?></div>
+            </div>
+            <div class="profile-row">
+                <div class="profile-key">Регистриран на</div>
+                <div><?php echo htmlspecialchars($user['created_at']); ?></div>
+            </div>
         </div>
     </main>
 </body>
+
 </html>

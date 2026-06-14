@@ -3,23 +3,16 @@ const ctx = canvas.getContext("2d");
 
 let backgroundImage = null;
 let uploadedImage = null;
-let title = "Тема на поканата";
-let date = "";
-let time = "";
-let room = "";
-let presenter = "";
-let facultyNumber = "";
-let descriptionText = "";
-let textX = 30;
-let textY = 30;
-let isDragging = false;
-let descriptionX = 30;
-let descriptionY = 250;
-let isDraggingDescription = false;
-const dragOffset = { x: 0, y: 0 };
+
+let textLayers = [];
+let activeIndex = null;
+
+let dragOffsetX = 0;
+let dragOffsetY = 0;
 
 const templateSelect = document.getElementById("templateSelect");
 const imageInput = document.getElementById("imageInput");
+const typeInput = document.getElementById("typeOptions");
 const titleInput = document.getElementById("titleInput");
 const dateInput = document.getElementById("dateInput");
 const timeInput = document.getElementById("timeInput");
@@ -33,84 +26,57 @@ const fontInput = document.getElementById("fontInput");
 const canvasData = document.getElementById("canvasData");
 const inviteForm = document.getElementById("inviteForm");
 const shareBtn = document.getElementById("shareBtn");
+const textLayersContainer = document.getElementById("textLayersContainer");
+const addTextBtn = document.getElementById("addTextBtn");
+const infoBox = document.getElementById("inviteInfo");
 
-const lineSpacing = 5;
 const defaultCanvasWidth = 600;
 const defaultCanvasHeight = 350;
-const maxPreviewWidth = 760;
-const maxPreviewHeight = 520;
+const maxPreviewSize = 600;
 
-function setPreviewSize(width, height) {
-    const preview = document.getElementById("previewArea");
-    if (!preview) return;
-    preview.style.width = Math.round(width) + "px";
-    preview.style.height = Math.round(height) + "px";
+colorInput.addEventListener("input", updateAllLayersStyle);
+fontInput.addEventListener("change", updateAllLayersStyle);
+sizeInput.addEventListener("input", updateAllLayersStyle);
+
+function updateAllLayersStyle() {
+    textLayers.forEach(layer => {
+        layer.color = colorInput.value;
+        layer.font = fontInput.value;
+        layer.size = sizeInput.value;
+    });
+
+    drawCanvas();
 }
 
 function setCanvasAspect(img) {
     if (!img) {
         canvas.width = defaultCanvasWidth;
         canvas.height = defaultCanvasHeight;
-        setPreviewSize(defaultCanvasWidth, defaultCanvasHeight);
         return;
     }
 
-    const ratio = img.width / img.height;
     let width = img.width;
     let height = img.height;
 
-    if (width > maxPreviewWidth) {
-        width = maxPreviewWidth;
-        height = Math.round(width / ratio);
+    let ratio;
+
+    if (height > width) {
+
+        ratio = maxPreviewSize / height;
+
+        height = maxPreviewSize;
+        width = Math.round(width * ratio);
+
+    } else {
+
+        ratio = maxPreviewSize / width;
+
+        width = maxPreviewSize;
+        height = Math.round(height * ratio);
     }
 
-    if (height > maxPreviewHeight) {
-        height = maxPreviewHeight;
-        width = Math.round(height * ratio);
-    }
-
-    canvas.width = Math.round(width);
-    canvas.height = Math.round(height);
-    setPreviewSize(canvas.width, canvas.height);
-}
-
-function getTextLines() {
-    const lines = [];
-    if (title) {
-        lines.push("Тема: " + title);
-    }
-    if (date || time) {
-        lines.push("Дата: " + date + " " + time);
-    }
-    if (room) {
-        lines.push("Зала: " + room);
-    }
-    if (presenter) {
-        lines.push("Презентиращ: " + presenter);
-    }
-    if (facultyNumber) {
-        lines.push("Факултетен номер: " + facultyNumber);
-    }
-    if (!lines.length) {
-        lines.push("Текст на поканата");
-    }
-    return lines;
-}
-
-function getTextBlockMetrics() {
-    ctx.font = sizeInput.value + "px " + fontInput.value;
-    const lines = getTextLines();
-    let maxWidth = 0;
-    lines.forEach(line => {
-        maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
-    });
-    const height = lines.length * (parseInt(sizeInput.value, 5) + lineSpacing) - lineSpacing;
-    return {
-        x: textX,
-        y: textY,
-        width: maxWidth + 20,
-        height: height + 20,
-    };
+    canvas.width = width;
+    canvas.height = height;
 }
 
 function drawCanvas() {
@@ -121,50 +87,123 @@ function drawCanvas() {
     } else if (backgroundImage) {
         ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     } else {
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#fff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    const lines = getTextLines();
-    ctx.fillStyle = colorInput.value;
-    ctx.font = sizeInput.value + "px " + fontInput.value;
-    ctx.textBaseline = "top";
-    let currentY = textY;
+    textLayers.forEach((layer) => {
+        ctx.font = sizeInput.value + "px " + fontInput.value;
+        ctx.fillStyle = colorInput.value;
 
-    lines.forEach(line => {
-        ctx.fillText(line, textX, currentY);
-        currentY += parseInt(sizeInput.value, 10) + lineSpacing;
+        ctx.fillText(layer.text, layer.x, layer.y);
+
     });
-    if (descriptionText) {
-        ctx.fillText(descriptionText, descriptionX, descriptionY);
-    }
-    const metrics = getTextBlockMetrics();
-    ctx.strokeStyle = "rgba(0, 0, 0, 0)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(metrics.x - 8, metrics.y - 8, metrics.width + 16, metrics.height + 16);
 }
 
-function setCanvasStateFromInputs() {
-    title = titleInput.value;
-    date = dateInput.value;
-    time = timeInput.value;
-    room = roomInput.value;
-    presenter = presenterInput.value;
-    facultyNumber = facultyNumberInput.value;
-    descriptionText = descriptionInput.value;
+function createTextInputLayer(layer) {
+
+    const wrapper = document.createElement("div");
+    wrapper.style.margin = "5px";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = layer.text;
+    input.placeholder = "Текст ";
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "x";
+
+    removeBtn.addEventListener("click", () => {
+        const i = textLayers.indexOf(layer);
+        if (i !== -1) {
+            textLayers.splice(i, 1);
+        }
+        wrapper.remove();
+        drawCanvas();
+    });
+
+    input.addEventListener("input", () => {
+        layer.text = input.value;
+        drawCanvas();
+    });
+
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(removeBtn);
+    textLayersContainer.appendChild(wrapper);
+
+    drawCanvas();
 }
+
+function updateAllLayersStyle() {
+    textLayers.forEach(layer => {
+        layer.color = colorInput.value;
+        layer.font = fontInput.value;
+        layer.size = sizeInput.value;
+    });
+
+    drawCanvas();
+}
+
+function getLayerAt(x, y) {
+    for (let i = textLayers.length - 1; i >= 0; i--) {
+        const layer = textLayers[i];
+
+        ctx.font = fontInput.value + " " + sizeInput.value + "px";
+        const w = ctx.measureText(layer.text).width;
+        const h = layer.size;
+
+        if (
+            x >= layer.x &&
+            x <= layer.x + w &&
+            y >= layer.y - h &&
+            y <= layer.y
+        ) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function clientToCanvasCoords(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    return { x, y };
+}
+
+addTextBtn.addEventListener("click", () => {
+    const newLayer = {
+        text: "",
+        x: 100,
+        y: 100,
+        size: sizeInput.value,
+        color: colorInput.value,
+        font: fontInput.value
+    };
+    textLayers.push(newLayer);
+    createTextInputLayer(newLayer);
+    drawCanvas();
+});
 
 templateSelect.addEventListener("change", function () {
+    uploadedImage = null;
+    imageInput.value = "";
     const selected = this.selectedOptions[0];
-    const imagePath = selected?.dataset?.image || "";
-    const description = selected?.dataset?.description || "";
+    const imagePath = selected.dataset.image || "";
+    const type = selected.dataset.type || "";
+    if (type) {
+        document.querySelector('input[name="type"][value="' + type + '"]').checked = true;
+    }
+
     if (!imagePath) {
         backgroundImage = null;
         drawCanvas();
         return;
     }
-    descriptionInput.value = description;
-    setCanvasStateFromInputs();
     // Normalize stored path: remove any leading '../' so it's web-relative
     let normalizedPath = imagePath.replace(/^\.\.\//, '');
 
@@ -185,6 +224,8 @@ templateSelect.addEventListener("change", function () {
 });
 
 imageInput.addEventListener("change", function () {
+    backgroundImage = null;
+    templateSelect.selectedIndex = 0;
     const file = this.files[0];
     if (!file) {
         uploadedImage = null;
@@ -201,119 +242,75 @@ imageInput.addEventListener("change", function () {
         setCanvasAspect(uploadedImage);
         drawCanvas();
     };
+
+    document.querySelector('input[name="type"][value="standard"]').checked = true;
 });
 
-titleInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-dateInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-timeInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-roomInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-presenterInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-facultyNumberInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-descriptionInput.addEventListener("input", () => { setCanvasStateFromInputs(); drawCanvas(); });
-colorInput.addEventListener("input", drawCanvas);
-sizeInput.addEventListener("input", drawCanvas);
-fontInput.addEventListener("change", drawCanvas);
-
-function isOverTextArea(x, y) {
-    const metrics = getTextBlockMetrics();
-    const padding = 10;
-    return x >= metrics.x - padding && x <= metrics.x + metrics.width + padding &&
-        y >= metrics.y - padding && y <= metrics.y + metrics.height + padding;
-}
-
-function isOverDescription(x, y) {
-    ctx.font = sizeInput.value + "px " + fontInput.value;
-
-    var width = ctx.measureText(descriptionText).width;
-    var height = parseInt(sizeInput.value, 10);
-
-    return (
-        x >= descriptionX &&
-        x <= descriptionX + width &&
-        y >= descriptionY &&
-        y <= descriptionY + height
-    );
-}
-
-function clientToCanvasCoords(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-    return { x, y };
-}
-
-canvas.addEventListener("pointerdown", function (e) {
+canvas.addEventListener("pointerdown", (e) => {
     const p = clientToCanvasCoords(e);
-    if (isOverTextArea(p.x, p.y)) {
-        isDragging = true;
-        dragOffset.x = p.x - textX;
-        dragOffset.y = p.y - textY;
+    const index = getLayerAt(p.x, p.y);
+
+    if (index !== -1) {
+        activeIndex = index;
+        dragOffsetX = p.x - textLayers[index].x;
+        dragOffsetY = p.y - textLayers[index].y;
         canvas.setPointerCapture(e.pointerId);
         canvas.style.cursor = "grabbing";
+    } else {
+        activeIndex = null;
     }
-    if (isOverDescription(p.x, p.y)) {
-        isDraggingDescription = true;
-        dragOffset.x = p.x - descriptionX;
-        dragOffset.y = p.y - descriptionY;
-        canvas.setPointerCapture(e.pointerId);
-        canvas.style.cursor = "grabbing";
-    }
+
+    drawCanvas();
 });
 
-canvas.addEventListener("pointermove", function (e) {
+canvas.addEventListener("pointermove", (e) => {
     const p = clientToCanvasCoords(e);
 
-    if (isDragging) {
-        const metrics = getTextBlockMetrics();
-        textX = p.x - dragOffset.x;
-        textY = p.y - dragOffset.y;
-        textX = Math.max(0, Math.min(textX, canvas.width - metrics.width));
-        textY = Math.max(0, Math.min(textY, canvas.height - metrics.height));
+    if (activeIndex !== null) {
+
+        textLayers[activeIndex].x = p.x - dragOffsetX;
+        textLayers[activeIndex].y = p.y - dragOffsetY;
+        canvas.style.cursor = "grabbing";
         drawCanvas();
         return;
     }
-    if (isDraggingDescription) {
-        const width = ctx.measureText(descriptionText).width;
-        const height = parseInt(sizeInput.value, 10);
-
-        descriptionX = p.x - dragOffset.x;
-        descriptionY = p.y - dragOffset.y;
-        descriptionX = Math.max(0, Math.min(descriptionX, canvas.width - width));
-        descriptionY = Math.max(0, Math.min(descriptionY, canvas.height - height));
-        drawCanvas();
-        return;
-    }
-
-    if (isOverDescription(p.x, p.y) || isOverTextArea(p.x, p.y)) {
+    if (getLayerAt(p.x, p.y) !== -1) {
         canvas.style.cursor = "grab";
     } else {
         canvas.style.cursor = "default";
     }
 });
 
-canvas.addEventListener("pointerup", function (e) {
-    if (isDragging) {
-        isDragging = false;
-        canvas.releasePointerCapture(e.pointerId);
-        canvas.style.cursor = "default";
-    }
-    if (isDraggingDescription) {
-        isDraggingDescription = false;
-        canvas.releasePointerCapture(e.pointerId);
-        canvas.style.cursor = "default";
-    }
+canvas.addEventListener("pointerup", (e) => {
+    activeIndex = null;
+    canvas.releasePointerCapture(e.pointerId);
+    canvas.style.cursor = "default";
 });
 
 canvas.addEventListener("pointerleave", () => {
-    if (isDragging) {
-        isDragging = false;
-    }
-    if (isDraggingDescription) {
-        isDraggingDescription = false;
-    }
     canvas.style.cursor = "default";
+});
+
+function updateInfoBox() {
+    document.getElementById("pTitle").textContent = titleInput.value;
+    document.getElementById("pDate").textContent = dateInput.value;
+    document.getElementById("pTime").textContent = timeInput.value;
+    document.getElementById("pRoom").textContent = roomInput.value;
+    document.getElementById("pPresenter").textContent = presenterInput.value;
+    document.getElementById("pFaculty").textContent = facultyNumberInput.value;
+    document.getElementById("pDesc").textContent = descriptionInput.value;
+}
+
+[
+    titleInput,
+    dateInput,
+    timeInput,
+    roomInput,
+    presenterInput,
+    facultyNumberInput,
+    descriptionInput
+].forEach(el => {
+    el?.addEventListener("input", updateInfoBox);
 });
 
 inviteForm.addEventListener("submit", function () {
@@ -331,11 +328,10 @@ shareBtn.addEventListener("click", function () {
     window.open("https://www.facebook.com/groups/1682521323128544", "_blank");
 });
 
-setCanvasStateFromInputs();
+updateInfoBox();
 drawCanvas();
 
 // If a template is already selected on page load, trigger change to load it
 if (templateSelect && templateSelect.value) {
     templateSelect.dispatchEvent(new Event('change'));
 }
-

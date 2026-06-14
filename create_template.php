@@ -91,13 +91,6 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
                     <input type="file" id="image" name="image" accept="image/*" required>
                 </div>
 
-                <div id="memeFields" style="display:none;">
-                    <div class="field-group">
-                        <label for="description">Текст за меме</label>
-                        <textarea id="description" name="description" placeholder="Текст върху меме шаблона"></textarea>
-                    </div>
-                </div>
-
                 <div class="field-group">
                     <label for="is_active">Активен</label>
                     <select id="is_active" name="is_active">

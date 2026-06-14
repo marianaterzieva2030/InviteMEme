@@ -38,7 +38,6 @@ if (isset($_GET['error'])) {
         default:
             $errorMessage = 'Възникна грешка. Моля, опитайте отново.';
     }
-    
 }
 ?>
 
@@ -69,7 +68,7 @@ if (isset($_GET['error'])) {
             </nav>
         </div>
     </header>
-    
+
     <h2><br>Създаване на покана</h2>
 
     <?php if ($successMessage): ?>
@@ -85,13 +84,12 @@ if (isset($_GET['error'])) {
                 <div class="field-group">
                     <label for="templateSelect">Избор на шаблон</label>
                     <select id="templateSelect" name="template_id">
-                        <option value="">-- Избери шаблон --</option>
+                        <option value="">-- Без шаблон --</option>
                         <?php foreach ($templates as $row): ?>
                             <option
                                 value="<?= $row['id'] ?>"
                                 data-image="<?= htmlspecialchars($row['image_path']) ?>"
-                                data-type="<?= htmlspecialchars($row['type']) ?>"
-                                data-description="<?= htmlspecialchars($row['description']) ?>">
+                                data-type="<?= htmlspecialchars($row['type']) ?>">
                                 <?= htmlspecialchars($row['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -101,6 +99,22 @@ if (isset($_GET['error'])) {
                 <div class="field-group">
                     <label for="imageInput">Качи снимка за фон</label>
                     <input type="file" id="imageInput" name="image" accept="image/*">
+                </div>
+
+                <div class="field-group">
+                    <label>Тип шаблон</label>
+
+                    <div class="type-options" for="typeOptions">
+                        <label class="radio-option">
+                            <input type="radio" name="type" value="standard" checked>
+                            Стандартен
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="type" value="meme">
+                            Меме
+                        </label>
+                    </div>
                 </div>
 
                 <div class="field-group">
@@ -139,6 +153,12 @@ if (isset($_GET['error'])) {
                     <textarea id="descriptionInput" name="description" placeholder="Описание..."></textarea>
                 </div>
 
+                <div class="field-group">
+                    <label for="textInput">Текстове върху снимката</label>
+                    <button type="button" id="addTextBtn">+ Добави текст</button>
+                    <div id="textLayersContainer"></div>
+                </div>
+
                 <div class="field-row">
                     <div class="field-group half">
                         <label for="colorInput">Цвят на текста</label>
@@ -160,6 +180,7 @@ if (isset($_GET['error'])) {
                     <input type="range" id="sizeInput" min="10" max="64" value="30">
                 </div>
 
+                <input type="hidden" name="textLayers" id="textLayersData">
                 <input type="hidden" name="canvas_data" id="canvasData">
 
                 <div class="button-row">
@@ -173,9 +194,17 @@ if (isset($_GET['error'])) {
         <div class="preview">
             <div class="preview-label">Преглед на поканата</div>
             <div class="preview-area" id="previewArea">
-
                 <canvas id="inviteCanvas" width="600" height="600"></canvas>
 
+                <div id="inviteInfo" class="invite-info">
+                    <p>Тема: <span id="pTitle"></span></p>
+                    <p>Дата: <span id="pDate"></span></p>
+                    <p>Час: <span id="pTime"></span></p>
+                    <p>Зала: <span id="pRoom"></span></p>
+                    <p>Презентиращ: <span id="pPresenter"></span></p>
+                    <p>Факултетен номер: <span id="pFaculty"></span></p>
+                    <p>Описание: <span id="pDesc"></span></p>
+                </div>
             </div>
 
         </div>

@@ -64,7 +64,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Изпратете вече създадена покана по имейл
                     или отворете Facebook групата.
                 </p>
-                <a href="#" class="btn">Изпрати</a>
+                <a href="send_invitation.php" class="btn">Изпрати</a>
             </div>
 
             <div class="feature-card">
@@ -73,7 +73,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Проверете кои покани са изпратени успешно
                     и кои са неуспешни.
                 </p>
-                <a href="#" class="btn">Виж статус</a>
+                <a href="status.php" class="btn">Виж статус</a>
             </div>
 
             <div class="feature-card">
@@ -82,7 +82,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Управлявайте профилната си информация
                     и променете паролата си.
                 </p>
-                <a href="#" class="btn">Към профила</a>
+                <a href="profile.php" class="btn">Към профила</a>
             </div>
 
         </section>

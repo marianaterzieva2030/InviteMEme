@@ -64,7 +64,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Активирайте, редактирайте или деактивирайте
                     съществуващи шаблони.
                 </p>
-                <a href="#" class="btn">Управлявай</a>
+                <a href="edit_templates.php" class="btn">Управлявай</a>
             </div>
 
             <div class="feature-card">
@@ -73,7 +73,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Вижте кои студенти са изпратили покани
                     по имейл и кои не са.
                 </p>
-                <a href="#" class="btn">Отвори</a>
+                <a href="stats.php" class="btn">Отвори</a>
             </div>
 
             <div class="feature-card">
@@ -82,7 +82,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                     Прегледайте профилната информация
                     и настройките си.
                 </p>
-                <a href="#" class="btn">Към профила</a>
+                <a href="profile.php" class="btn">Към профила</a>
             </div>
 
         </section>
