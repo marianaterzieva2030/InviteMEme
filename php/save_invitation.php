@@ -45,19 +45,6 @@ if ($imageData === false) {
 
 $uploadDir = __DIR__ . '/../uploads/custom/';
 
-echo "<pre>";
-echo "uploadDir = $uploadDir\n";
-echo "exists = " . (is_dir($uploadDir) ? "YES" : "NO") . "\n";
-echo "writable = " . (is_writable($uploadDir) ? "YES" : "NO") . "\n";
-
-if (is_dir($uploadDir)) {
-    echo "perms = " . substr(sprintf('%o', fileperms($uploadDir)), -4) . "\n";
-    echo "owner = " . fileowner($uploadDir) . "\n";
-}
-
-echo "</pre>";
-exit;
-
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
         error_log('save_invitation: failed to create upload dir: ' . $uploadDir);

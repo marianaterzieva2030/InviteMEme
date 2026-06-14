@@ -11,6 +11,20 @@ initializeDatabase($db);
 // $teacher = $stmt->fetch();
 // echo "Проверка за съществуващ учител: " . ($teacher ? "Намерен " . $teacher['email'] : "Не е намерен") . "<br>";
 
+$dirs = [
+    __DIR__ . '/uploads',
+    __DIR__ . '/uploads/custom',
+    __DIR__ . '/uploads/templates'
+];
+
+foreach ($dirs as $dir) {
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+
+    @chmod($dir, 0777);
+}
+
 header("Location: login.html");
 exit;
 ?>
