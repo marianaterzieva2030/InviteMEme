@@ -73,8 +73,6 @@ if ($bytes === false) {
     exit;
 }
 
-$description_combined = trim(($presenter !== '' ? "Презентиращ: $presenter\n" : '') . $description);
-
 $stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path) VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
 $stmt->execute([
     ':user_id' => $_SESSION['user_id'],
@@ -83,7 +81,7 @@ $stmt->execute([
     ':presentation_date' => $presentation_date,
     ':presentation_time' => $presentation_time,
     ':room' => $room,
-    ':description' => $description_combined,
+    ':description' => $description,
     ':generated_image_path' => $generated_image_path,
 ]);
 

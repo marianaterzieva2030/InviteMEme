@@ -37,7 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         if (empty($recipients)) {
             $message = 'Няма регистрирани студенти за този семестър.';
         } else {
-            $success = 0; $failed = 0;
+            $success = 0;
+            $failed = 0;
 
             // Mailer config from env (optional)
             $smtpHost = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
@@ -68,10 +69,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     $mail->addAddress($to);
                     $mail->Subject = 'Покана: ' . ($inv['title'] ?? 'Invitation');
 
-                    $body = "<p>Здравейте,</p>";
-                    $body .= "<p>Изпращаме ви покана: <strong>" . htmlspecialchars($inv['title']) . "</strong></p>";
+                    $body = "<p>Здравейте,</p>
+
+                            <p>Изпращаме ви покана за презентация:</p>
+
+                            <p>Тема: " . htmlspecialchars($inv['title']) . "</p>
+
+                            <p>Дата: " . htmlspecialchars($inv['presentation_date'] ?? '') . "</p>
+
+                            <p>Час: " . htmlspecialchars($inv['presentation_time'] ?? '') . "</p>
+
+                            <p>Зала: " . htmlspecialchars($inv['room'] ?? '') . "</p>
+
+                            <p>Презентиращ: " . htmlspecialchars($inv['presenter'] ?? '') . "</p>";
+
                     if (!empty($inv['description'])) {
-                        $body .= "<p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
+                        $body .= "<p>Описание: </p>
+                         <p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
                     }
 
                     // Attach generated image if exists
@@ -95,25 +109,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 }
 
                 // Insert recipient record
-                    // Update existing recipient row (pending) if present, otherwise insert new
-                    $update = $db->prepare('UPDATE invitation_recipients SET status = :status, sent_at = :sent_at WHERE invitation_id = :invitation_id AND recipient_email = :recipient_email');
-                    $update->execute([
-                        ':status' => $status,
-                        ':sent_at' => $sent_at,
-                        ':invitation_id' => $invitation_id,
-                        ':recipient_email' => $to
-                    ]);
+                // Update existing recipient row (pending) if present, otherwise insert new
+                $update = $db->prepare('UPDATE invitation_recipients SET status = :status, sent_at = :sent_at WHERE invitation_id = :invitation_id AND recipient_email = :recipient_email');
+                $update->execute([
+                    ':status' => $status,
+                    ':sent_at' => $sent_at,
+                    ':invitation_id' => $invitation_id,
+                    ':recipient_email' => $to
+                ]);
 
-                    if ($update->rowCount() === 0) {
-                        $ins = $db->prepare('INSERT INTO invitation_recipients (invitation_id, recipient_email, status, sent_at) 
+                if ($update->rowCount() === 0) {
+                    $ins = $db->prepare('INSERT INTO invitation_recipients (invitation_id, recipient_email, status, sent_at) 
                                              VALUES (:invitation_id, :recipient_email, :status, :sent_at)');
-                        $ins->execute([
-                            ':invitation_id' => $invitation_id,
-                            ':recipient_email' => $to,
-                            ':status' => $status,
-                            ':sent_at' => $sent_at
-                        ]);
-                    }
+                    $ins->execute([
+                        ':invitation_id' => $invitation_id,
+                        ':recipient_email' => $to,
+                        ':status' => $status,
+                        ':sent_at' => $sent_at
+                    ]);
+                }
             }
 
             $message = "Изпратени имейли: $success, неуспешни: $failed";
@@ -129,17 +143,31 @@ $invitations = $list->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Изпращане на покани</title>
     <link rel="stylesheet" href="styles/edit_templates.css">
     <style>
-        table { width:100%; border-collapse: collapse; }
-        th, td { padding: .5rem; border-bottom: 1px solid #ddd; }
-        .small-img { height: 80px; border-radius: 8px;}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: .5rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .small-img {
+            height: 80px;
+            border-radius: 8px;
+        }
     </style>
- </head>
+</head>
+
 <body>
     <header>
         <div class="header-container">
@@ -147,17 +175,17 @@ $invitations = $list->fetchAll();
                 <a id="home-link" href="home_student.php">InviteMEme</a>
             </div>
 
-        <nav>
-            <ul>
-                <li><a href="create_invitation.php">Създаване на покана</a></li>
-                <li><a href="#" id="active-menu">Изпращане</a></li>
-                <li><a href="status.php">Статус</a></li>
-                <li><a href="profile.php">Профил</a></li>
-                <li><a href="auth/logout.php">Изход</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+            <nav>
+                <ul>
+                    <li><a href="create_invitation.php">Създаване на покана</a></li>
+                    <li><a href="#" id="active-menu">Изпращане</a></li>
+                    <li><a href="status.php">Статус</a></li>
+                    <li><a href="profile.php">Профил</a></li>
+                    <li><a href="auth/logout.php">Изход</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <main>
         <h2>Вашите създадени покани</h2> <br>
         <?php if ($message): ?><p><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
@@ -165,31 +193,41 @@ $invitations = $list->fetchAll();
             <p>Нямате запазени покани.</p>
         <?php else: ?>
             <table>
-                <thead><tr><th>Заглавие</th><th>Дата</th><th>Създадено</th><th>Картина</th><th>Действие</th></tr></thead>
-                <tbody>
-                <?php foreach ($invitations as $inv): ?>
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($inv['title']); ?></td>
-                        <td><?php echo htmlspecialchars($inv['presentation_date'] . ' ' . $inv['presentation_time']); ?></td>
-                        <td><?php echo htmlspecialchars($inv['created_at']); ?></td>
-                        <td><?php if (!empty($inv['generated_image_path']) && file_exists($inv['generated_image_path'])): ?>
-                            <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
-                            <?php else: ?> - <?php endif; ?></td>
-                        <td>
-                            <form method="POST">
-                                <input type="hidden" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">
-                                <input type="hidden" name="action" value="send_all">
-                                <div class="actions">
-                                    
-                                    <button type="submit">Изпрати на всички студенти (фев-юли)</button>
-                                </div>
-                            </form>
-                        </td>
+                        <th>Заглавие</th>
+                        <th>Дата</th>
+                        <th>Създадено</th>
+                        <th>Картина</th>
+                        <th>Действие</th>
                     </tr>
-                <?php endforeach; ?>
+                </thead>
+                <tbody>
+                    <?php foreach ($invitations as $inv): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($inv['title']); ?></td>
+                            <td><?php echo htmlspecialchars($inv['presentation_date'] . ' ' . $inv['presentation_time']); ?></td>
+                            <td><?php echo htmlspecialchars($inv['created_at']); ?></td>
+                            <td><?php if (!empty($inv['generated_image_path']) && file_exists($inv['generated_image_path'])): ?>
+                                    <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
+                                <?php else: ?> - <?php endif; ?>
+                            </td>
+                            <td>
+                                <form method="POST">
+                                    <input type="hidden" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">
+                                    <input type="hidden" name="action" value="send_all">
+                                    <div class="actions">
+
+                                        <button type="submit">Изпрати на всички студенти (фев-юли)</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php endif; ?>
     </main>
 </body>
+
 </html>
