@@ -11,13 +11,6 @@ initializeDatabase($db);
 // $teacher = $stmt->fetch();
 // echo "Проверка за съществуващ учител: " . ($teacher ? "Намерен " . $teacher['email'] : "Не е намерен") . "<br>";
 
-echo "<pre>";
-
-echo "PHP user: " . get_current_user() . "\n";
-echo "UID: " . getmyuid() . "\n";
-
-echo "</pre>";
-
-// header("Location: login.html");
+header("Location: login.html");
 exit;
 ?>

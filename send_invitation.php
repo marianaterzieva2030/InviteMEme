@@ -39,8 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $start = "$year-02-01 00:00:00";
         $end = "$year-07-31 23:59:59";
 
-        $rstmt = $db->prepare('SELECT email FROM users WHERE email IS NOT NULL AND email <> "" AND created_at BETWEEN :start AND :end');
-        $rstmt->execute(['start' => $start, 'end' => $end]);
+        $user_email = $inv['user_email'] ?? '';
+
+        // Fetch all student emails registered in the current semester, excluding the current user
+        $rstmt = $db->prepare('SELECT email FROM users WHERE email IS NOT NULL AND email <> :user_email AND created_at BETWEEN :start AND :end');
+        $rstmt->execute(['start' => $start, 'end' => $end, 'user_email' => $user_email]);
         $recipients = $rstmt->fetchAll();
 
         if (empty($recipients)) {
