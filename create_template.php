@@ -105,7 +105,7 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
 
         </div>
         <div class="preview">
-            <div class="preview-label">Преглед на поканата</div>
+            <div class="preview-label">Преглед на шаблона</div>
             <div class="preview-area" id="previewArea">
 
                 <canvas id="inviteCanvas" width="600" height="600"></canvas>

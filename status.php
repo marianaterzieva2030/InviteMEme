@@ -45,9 +45,6 @@ foreach ($invitations as $inv) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Статус на поканите</title>
     <link rel="stylesheet" href="styles/edit_templates.css">
-    <style>
-        .small-note { color:#666; font-size:0.95rem; margin-bottom:1rem; }
-    </style>
 </head>
 <body>
     <header>
@@ -66,10 +63,8 @@ foreach ($invitations as $inv) {
     </header>
 
     <main>
-        <div class="welcome-card">
-            <h1>Статус на поканите</h1>
-            <p class="small-note">Тук са показани всички запазени покани и статусът им.</p>
-
+        <h2>Статус на поканите</h2>
+        <p>Тук са показани всички запазени покани и статусът им.</p> <br>
             <table>
                 <thead>
                     <tr>
@@ -130,7 +125,6 @@ foreach ($invitations as $inv) {
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
     </main>
 
 </body>
