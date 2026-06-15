@@ -1,0 +1,25 @@
+# Docker Compose file for w26-invitememe
+# Generated from HSS Admin on 14/06/2026, 11:17:34
+# Application: w26-invitememe-5k0ad5
+
+version: '3.8'
+name: w26-invitememe-5k0ad5
+services:
+  app:
+    container_name: w26-invitememe-5k0ad5-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      SMTP_HOST: smtp.gmail.com
+      SMTP_USER: invitememe.team@gmail.com
+      SMTP_PASS: vfvkwhfjbbkwlxvq
+      SMTP_PORT: '587'
+      MARIADB_HOST: 10.10.108.51
+      MARIADB_PORT: '3306'
+      MARIADB_USER: w26_invitememe_5k0ad5_root
+      MARIADB_PASSWORD: plymHW8o@d5pLrDw
+      MARIADB_DATABASE: w26_invitememe_5k0ad5_inviteme
+      MARIADB_CONNECTION_STRING: mysql://w26_invitememe_5k0ad5_root:plymHW8o@d5pLrDw@10.10.108.51:3306/w26_invitememe_5k0ad5_inviteme
+    ports:
+      - '10070:80'

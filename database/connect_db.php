@@ -9,6 +9,7 @@ class DatabaseConnection
         $config = require 'config.php';
         $dsn =
             "mysql:host={$config['host']};" .
+            "port={$config['port']};" .
             "dbname={$config['dbname']};" .
             "charset=utf8mb4";
 

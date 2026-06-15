@@ -44,6 +44,7 @@ if ($imageData === false) {
 }
 
 $uploadDir = __DIR__ . '/../uploads/custom/';
+
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
         error_log('save_invitation: failed to create upload dir: ' . $uploadDir);

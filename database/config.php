@@ -1,9 +1,10 @@
 <?php
 
 return [
-    'host' => getenv('DB_HOST') ?: 'localhost',
-    'dbname' => getenv('DB_NAME') ?: 'inviteme',
-    'username' => getenv('DB_USER') ?: 'root',
-    'password' => getenv('DB_PASSWORD') ?: ''
+    'host' => getenv('MARIADB_HOST') ?: 'localhost',
+    'port' => getenv('MARIADB_PORT') ?: 3306,
+    'dbname' => getenv('MARIADB_DATABASE') ?: 'inviteme',
+    'username' => getenv('MARIADB_USER') ?: 'root',
+    'password' => getenv('MARIADB_PASSWORD') ?: ''
 ];
 ?>
