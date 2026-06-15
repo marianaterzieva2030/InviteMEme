@@ -40,7 +40,7 @@ if ($typeFilter === 'standard' || $typeFilter === 'meme') {
     $params[':type'] = $typeFilter;
 }
 
-$q = $db->prepare("SELECT id, name, type, image_path, description, is_active, created_at FROM invitation_templates $where ORDER BY created_at DESC");
+$q = $db->prepare("SELECT id, name, type, image_path, is_active, created_at FROM invitation_templates $where ORDER BY created_at DESC");
 $q->execute($params);
 $templates = $q->fetchAll();
 
@@ -54,7 +54,21 @@ $templates = $q->fetchAll();
     <link rel="stylesheet" href="styles/edit_templates.css">
     <style>
         .actions form{ display:inline-block; margin:0 4px; }
-        .filter-links { margin-bottom:1rem; }
+        .filter-links { 
+            margin-top: 1rem;
+            margin-bottom:1rem; 
+        }
+        .filter-links a {
+            text-decoration: underline;
+            color: black;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        .filter-links a:hover {
+            color: var(--orange);
+        }
     </style>
 </head>
 <body>
@@ -89,13 +103,12 @@ $templates = $q->fetchAll();
             <p>Няма шаблони.</p>
         <?php else: ?>
             <table>
-                <thead><tr><th>Име</th><th>Тип</th><th>Описание</th><th>Изображение</th><th>Активен</th><th>Действия</th></tr></thead>
+                <thead><tr><th>Име</th><th>Тип</th><th>Изображение</th><th>Активен</th><th>Действия</th></tr></thead>
                 <tbody>
                 <?php foreach ($templates as $t): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($t['name']); ?></td>
                         <td><?php echo htmlspecialchars($t['type']); ?></td>
-                        <td><?php echo htmlspecialchars($t['description']); ?></td>
                         <td><?php 
                             if (!empty($t['image_path'])): 
                                 $img = $t['image_path']; 

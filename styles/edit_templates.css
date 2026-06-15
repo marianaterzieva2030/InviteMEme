@@ -64,6 +64,24 @@ main {
     padding: 0 1rem;
 }
 
+main .filter-links { 
+    margin-top: 1rem;
+    margin-bottom:1rem; 
+}
+
+main .filter-links a {
+    text-decoration: none;
+    color: var(--orange);
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+main .filter-links a:hover, main .filter-links .active {
+    background-color: rgba(255, 159, 28, 0.2);
+}
+
 .welcome-card {
     background: white;
     border-radius: 16px;

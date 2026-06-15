@@ -5,7 +5,6 @@ $db = (new DatabaseConnection())->getConnection();
 
 $name = $_POST['name'];
 $type = $_POST['type'];
-$description = $_POST['description'] ?? null;
 $is_active = $_POST['is_active'];
 $created_by = $_SESSION['user_id'];
 
@@ -26,15 +25,14 @@ if (!move_uploaded_file($img['tmp_name'], $relativePath . $fileName)) {
 }
 
 $stmt = $db->prepare("
-    INSERT INTO invitation_templates (name, type, image_path, description, is_active, created_by)
-    VALUES (:name, :type, :image_path, :description, :is_active, :created_by)
+    INSERT INTO invitation_templates (name, type, image_path, is_active, created_by)
+    VALUES (:name, :type, :image_path, :is_active, :created_by)
 ");
 
 $stmt->execute([
     ':name' => $name,
     ':type' => $type,
     ':image_path' => 'uploads/templates/' . $fileName,
-    ':description' => $description,
     ':is_active' => $is_active,
     ':created_by' => $created_by
 ]);

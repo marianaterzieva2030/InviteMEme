@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         $user_email = $inv['user_email'] ?? '';
 
+        // TODO: optimize by excluding teachers (whose email may be the same as the smtp client)
         // Fetch all student emails registered in the current semester, excluding the current user
         $rstmt = $db->prepare('SELECT email FROM users WHERE email IS NOT NULL AND email <> :user_email AND created_at BETWEEN :start AND :end');
         $rstmt->execute(['start' => $start, 'end' => $end, 'user_email' => $user_email]);
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $success = 0;
             $failed = 0;
 
-            // Mailer config from env (optional)
+            // Mailer config from env
             $smtpHost = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
             $smtpUser = getenv('SMTP_USER') ?: 'invitememe.team@gmail.com';
             $smtpPass = getenv('SMTP_PASS') ?: 'vfvkwhfjbbkwlxvq';
