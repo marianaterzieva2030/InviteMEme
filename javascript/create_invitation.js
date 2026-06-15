@@ -17,8 +17,6 @@ const titleInput = document.getElementById("titleInput");
 const dateInput = document.getElementById("dateInput");
 const timeInput = document.getElementById("timeInput");
 const roomInput = document.getElementById("roomInput");
-const presenterInput = document.getElementById("presenterInput");
-const facultyNumberInput = document.getElementById("facultyNumberInput");
 const descriptionInput = document.getElementById("descriptionInput");
 const colorInput = document.getElementById("colorInput");
 const sizeInput = document.getElementById("sizeInput");
@@ -296,8 +294,6 @@ function updateInfoBox() {
     document.getElementById("pDate").textContent = dateInput.value;
     document.getElementById("pTime").textContent = timeInput.value;
     document.getElementById("pRoom").textContent = roomInput.value;
-    document.getElementById("pPresenter").textContent = presenterInput.value;
-    document.getElementById("pFaculty").textContent = facultyNumberInput.value;
     document.getElementById("pDesc").textContent = descriptionInput.value;
 }
 
@@ -306,8 +302,6 @@ function updateInfoBox() {
     dateInput,
     timeInput,
     roomInput,
-    presenterInput,
-    facultyNumberInput,
     descriptionInput
 ].forEach(el => {
     el?.addEventListener("input", updateInfoBox);

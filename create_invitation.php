@@ -9,6 +9,10 @@ if (empty($_SESSION['user_id'])) {
 require "database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
+$stmtUser = $db->prepare("SELECT first_name, last_name, faculty_number FROM users WHERE id = :id LIMIT 1");
+$stmtUser->execute([':id' => $_SESSION['user_id']]);
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
 $stmt = $db->prepare("SELECT id, name, image_path, type, description FROM invitation_templates WHERE is_active = 1");
 $stmt->execute();
 $templates = $stmt->fetchAll();
@@ -104,7 +108,7 @@ if (isset($_GET['error'])) {
                 <div class="field-group">
                     <label>Тип шаблон</label>
 
-                    <div class="type-options" for="typeOptions">
+                    <div class="type-options" id="typeOptions">
                         <label class="radio-option">
                             <input type="radio" name="type" value="standard" checked>
                             Стандартен
@@ -136,16 +140,6 @@ if (isset($_GET['error'])) {
                 <div class="field-group">
                     <label for="roomInput">Зала</label>
                     <input type="text" id="roomInput" name="room" placeholder="Зала" required>
-                </div>
-
-                <div class="field-group">
-                    <label for="presenterInput">Презентиращ</label>
-                    <input type="text" id="presenterInput" name="presenter" placeholder="Име на презентиращия" required>
-                </div>
-
-                <div class="field-group">
-                    <label for="faculty_number">Факултетен номер</label>
-                    <input type="text" id="facultyNumberInput" name="faculty_number" placeholder="Факултетен номер" required>
                 </div>
 
                 <div class="field-group">
@@ -201,8 +195,8 @@ if (isset($_GET['error'])) {
                     <p>Дата: <span id="pDate"></span></p>
                     <p>Час: <span id="pTime"></span></p>
                     <p>Зала: <span id="pRoom"></span></p>
-                    <p>Презентиращ: <span id="pPresenter"></span></p>
-                    <p>Факултетен номер: <span id="pFaculty"></span></p>
+                    <p>Презентиращ: <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></p>
+                    <p>Факултетен номер: <?= htmlspecialchars($user['faculty_number'] ?? '') ?></p>
                     <p>Описание: <span id="pDesc"></span></p>
                 </div>
             </div>

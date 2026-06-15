@@ -23,7 +23,6 @@ $title = trim($_POST['title'] ?? '');
 $presentation_date = trim($_POST['presentation_date'] ?? '');
 $presentation_time = trim($_POST['presentation_time'] ?? '');
 $room = trim($_POST['room'] ?? '');
-$presenter = trim($_POST['presenter'] ?? '');
 $description = trim($_POST['description'] ?? '');
 $canvas_data = $_POST['canvas_data'] ?? '';
 
@@ -73,7 +72,8 @@ if ($bytes === false) {
     exit;
 }
 
-$stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path) VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
+$stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path)
+                     VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
 $stmt->execute([
     ':user_id' => $_SESSION['user_id'],
     ':template_id' => $template_id,

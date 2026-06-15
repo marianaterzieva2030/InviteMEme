@@ -19,7 +19,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $invitation_id = (int)$_POST['invitation_id'];
 
     // Fetch invitation (ensure owner)
-    $stmt = $db->prepare('SELECT * FROM invitations WHERE id = :id AND user_id = :uid LIMIT 1');
+    $stmt = $db->prepare("
+        SELECT i.*, 
+            u.first_name, 
+            u.last_name, 
+            u.faculty_number, 
+            u.email AS user_email
+        FROM invitations i
+        JOIN users u ON u.id = i.user_id
+        WHERE i.id = :id AND i.user_id = :uid
+        LIMIT 1");
     $stmt->execute(['id' => $invitation_id, 'uid' => $_SESSION['user_id']]);
     $inv = $stmt->fetch();
     if (!$inv) {
@@ -70,21 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     $mail->Subject = 'Покана: ' . ($inv['title'] ?? 'Invitation');
 
                     $body = "<p>Здравейте,</p>
-
                             <p>Изпращаме ви покана за презентация:</p>
-
-                            <p>Тема: " . htmlspecialchars($inv['title']) . "</p>
-
-                            <p>Дата: " . htmlspecialchars($inv['presentation_date'] ?? '') . "</p>
-
-                            <p>Час: " . htmlspecialchars($inv['presentation_time'] ?? '') . "</p>
-
-                            <p>Зала: " . htmlspecialchars($inv['room'] ?? '') . "</p>
-
-                            <p>Презентиращ: " . htmlspecialchars($inv['presenter'] ?? '') . "</p>";
+                            <p><strong>Тема: </strong>" . htmlspecialchars($inv['title']) . "</p>
+                            <p><strong>Дата: </strong>" . htmlspecialchars($inv['presentation_date'] ?? '') . "</p>
+                            <p><strong>Час: </strong>" . htmlspecialchars($inv['presentation_time'] ?? '') . "</p>
+                            <p><strong>Зала: </strong>" . htmlspecialchars($inv['room'] ?? '') . "</p>
+                            <p><strong>Презентиращ: </strong>" . htmlspecialchars($inv['first_name'] . ' ' . $inv['last_name']) . "</p>";
 
                     if (!empty($inv['description'])) {
-                        $body .= "<p>Описание: </p>
+                        $body .= "<p><strong>Описание: </strong></p>
                          <p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
                     }
 
