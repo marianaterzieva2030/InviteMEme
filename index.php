@@ -6,11 +6,11 @@ $db = (new DatabaseConnection())->getConnection();
 
 initializeDatabase($db);
 
-$stmt = $db->prepare("SELECT * FROM users WHERE edition_id = '1' LIMIT 1");
+$stmt = $db->prepare("SELECT * FROM users");
 $stmt->execute();
 $users_edition = $stmt->fetch();
 if (!$users_edition) {
-    echo "Няма потребители с edition_id = 1";
+    echo "Няма потребители";
     exit;
 } else {
     foreach ($users_edition as $u) {
@@ -18,7 +18,19 @@ if (!$users_edition) {
     }
 }
 
-migrateDatabase($db);
+$inv_stmt = $db->prepare("SELECT * FROM invitations");
+$inv_stmt->execute();
+$invitations = $inv_stmt->fetch();
+if (!$invitations) {
+    echo "Няма покани";
+    exit;
+} else {
+    foreach ($invitations as $i) {
+        echo "Покана: " . $i['id'] . " Потребител: " . $i['user_id'] . " Създадена на: " . $i['created_at'];
+    }
+}
+
+// migrateDatabase($db);
 
 // $stmt = $db->prepare("SELECT * FROM users WHERE role = 'teacher' LIMIT 1");
 // $stmt->execute();
