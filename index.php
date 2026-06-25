@@ -6,27 +6,21 @@ $db = (new DatabaseConnection())->getConnection();
 
 initializeDatabase($db);
 
-$stmt = $db->prepare("SELECT * FROM users");
-$stmt->execute();
-$users_edition = $stmt->fetch();
-if (!$users_edition) {
-    echo "Няма потребители";
-    exit;
-} else {
-    foreach ($users_edition as $u) {
-        echo "Потребител: " . $u['email'] . "<br>";
-    }
-}
+$stmt = $db->query("SELECT * FROM users");
+
+echo "<pre>";
+var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));
+echo "</pre>";
 
 $inv_stmt = $db->prepare("SELECT * FROM invitations");
 $inv_stmt->execute();
-$invitations = $inv_stmt->fetch();
+$invitations = $inv_stmt->fetchAll();
 if (!$invitations) {
     echo "Няма покани";
     exit;
 } else {
     foreach ($invitations as $i) {
-        echo "Покана: " . $i['id'] . " Потребител: " . $i['user_id'] . " Създадена на: " . $i['created_at'];
+        echo "Покана: " . $i['id'] . " | Потребител: " . $i['user_id'] . " | Създадена на: " . $i['created_at'] . "<br>";
     }
 }
 
