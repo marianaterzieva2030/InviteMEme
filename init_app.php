@@ -144,29 +144,7 @@ function initializeDatabase(PDO $db): void
 
 function migrateDatabase(PDO $db): void
 {
-    try {
-        $db->exec("
-            UPDATE users
-            SET 
-                major = 'Софтуерно инженерство',
-                study_year = 3,
-                edition_id = 1
-            WHERE role = 'student'
-            AND edition_id IS NULL
-        ");
-    } catch (PDOException $e) {
-        error_log($e->getMessage());
-    }
-
-    try {
-        $db->exec("
-            UPDATE invitations
-            SET edition_id = 1
-            WHERE edition_id IS NULL
-        ");
-    } catch (PDOException $e) {
-        error_log($e->getMessage());
-    }
+    // update docker database if needed
 }
 
 ?>
