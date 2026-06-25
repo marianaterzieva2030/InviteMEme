@@ -192,3 +192,74 @@ img.template-preview {
 .actions button:hover {
     background: var(--turquoise);
 }
+
+
+
+/* send_invitation */
+#recipient_emails {
+    width: 100%;
+    min-height: 320px;
+
+    padding: 10px;
+
+    border: 2px solid var(--turquoise);
+    border-radius: 12px;
+
+    background: white;
+
+    font-size: 0.95rem;
+    line-height: 1.6;
+
+    box-shadow: var(--shadow);
+
+    transition: 0.3s;
+}
+
+#recipient_emails:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.2);
+}
+
+
+#recipient_emails option {
+    padding: 10px;
+    margin: 2px 0;
+
+    border-radius: 6px;
+}
+
+#recipient_emails option:checked {
+    background: var(--turquoise);
+    color: white;
+    font-weight: 600;
+}
+
+
+#recipient_emails optgroup {
+    font-weight: bold;
+    color: var(--orange);
+}
+
+.recipient-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.recipient-buttons button {
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: var(--orange);
+    color: white;
+
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.recipient-buttons button:hover {
+    background: var(--turquoise);
+}

@@ -14,13 +14,49 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 $message = '';
+$selected_recipients = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_all' && !empty($_POST['invitation_id'])) {
+$year = date('Y');
+$start = "$year-02-01 00:00:00";
+$end = "$year-07-31 23:59:59";
+
+$recipientQuery = $db->prepare(
+    'SELECT id, first_name, last_name, email, role
+     FROM users
+     WHERE email IS NOT NULL
+       AND id <> :uid
+       AND (created_at BETWEEN :start AND :end OR role = "teacher")
+     ORDER BY CASE WHEN role = "teacher" THEN 0 ELSE 1 END, first_name, last_name'
+);
+$recipientQuery->execute([
+    ':uid' => $_SESSION['user_id'],
+    ':start' => $start,
+    ':end' => $end
+]);
+$recipient_list = $recipientQuery->fetchAll();
+$allowedEmails = array_column($recipient_list, 'email');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_selected' && !empty($_POST['invitation_id'])) {
     $invitation_id = (int)$_POST['invitation_id'];
+    $selected_recipients = $_POST['recipient_emails'] ?? [];
 
-    // Fetch invitation (ensure owner)
-    $stmt = $db->prepare("
-        SELECT i.*, 
+    if (!is_array($selected_recipients)) {
+        $selected_recipients = [$selected_recipients];
+    }
+
+    $selected_recipients = array_unique(array_map('trim', $selected_recipients));
+    $selected_recipients = array_filter($selected_recipients);
+
+    if (empty($selected_recipients)) {
+        $message = 'Моля, изберете поне един получател от списъка.';
+    } else {
+        $invalidEmails = array_values(array_diff($selected_recipients, $allowedEmails));
+        if (!empty($invalidEmails)) {
+            $message = 'Невалидни или неразрешени имейл адреси: ' . htmlspecialchars(implode(', ', $invalidEmails));
+        } else {
+            // Fetch invitation (ensure owner)
+            $stmt = $db->prepare(
+                "SELECT i.*, 
             u.first_name, 
             u.last_name, 
             u.faculty_number, 
@@ -28,61 +64,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         FROM invitations i
         JOIN users u ON u.id = i.user_id
         WHERE i.id = :id AND i.user_id = :uid
-        LIMIT 1");
-    $stmt->execute(['id' => $invitation_id, 'uid' => $_SESSION['user_id']]);
-    $inv = $stmt->fetch();
-    if (!$inv) {
-        $message = 'Invitation not found.';
-    } else {
-        // Determine semester range (Feb 1 - Jul 31 current year)
-        $year = date('Y');
-        $start = "$year-02-01 00:00:00";
-        $end = "$year-07-31 23:59:59";
+        LIMIT 1"
+            );
+            $stmt->execute(['id' => $invitation_id, 'uid' => $_SESSION['user_id']]);
+            $inv = $stmt->fetch();
+            if (!$inv) {
+                $message = 'Invitation not found.';
+            } else {
+                $success = 0;
+                $failed = 0;
 
-        $user_email = $inv['user_email'] ?? '';
+                // Mailer config from env
+                $smtpHost = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
+                $smtpUser = getenv('SMTP_USER') ?: 'invitememe.team@gmail.com';
+                $smtpPass = getenv('SMTP_PASS') ?: 'vfvkwhfjbbkwlxvq';
+                $smtpPort = getenv('SMTP_PORT') ?: 587;
 
-        // TODO: optimize by excluding teachers (whose email may be the same as the smtp client)
-        // Fetch all student emails registered in the current semester, excluding the current user
-        $rstmt = $db->prepare('SELECT email FROM users WHERE email IS NOT NULL AND email <> :user_email AND created_at BETWEEN :start AND :end');
-        $rstmt->execute(['start' => $start, 'end' => $end, 'user_email' => $user_email]);
-        $recipients = $rstmt->fetchAll();
+                foreach ($selected_recipients as $to) {
+                    $mail = new PHPMailer(true);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    try {
+                        if (!empty($smtpHost)) {
+                            $mail->isSMTP();
+                            $mail->Host = $smtpHost;
+                            $mail->SMTPAuth = true;
+                            $mail->Username = $smtpUser;
+                            $mail->Password = $smtpPass;
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = $smtpPort;
+                        } else {
+                            $mail->isMail();
+                        }
 
-        if (empty($recipients)) {
-            $message = 'Няма регистрирани студенти за този семестър.';
-        } else {
-            $success = 0;
-            $failed = 0;
+                        $mail->setFrom($smtpUser, 'InviteMEme');
+                        $mail->addAddress($to);
+                        $mail->Subject = 'Покана: ' . ($inv['title'] ?? 'Invitation');
 
-            // Mailer config from env
-            $smtpHost = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
-            $smtpUser = getenv('SMTP_USER') ?: 'invitememe.team@gmail.com';
-            $smtpPass = getenv('SMTP_PASS') ?: 'vfvkwhfjbbkwlxvq';
-            $smtpPort = getenv('SMTP_PORT') ?: 587;
-
-            foreach ($recipients as $r) {
-                $to = $r['email'];
-
-                $mail = new PHPMailer(true);
-                $mail->CharSet = 'UTF-8';
-                $mail->Encoding = 'base64';
-                try {
-                    if (!empty($smtpHost)) {
-                        $mail->isSMTP();
-                        $mail->Host = $smtpHost;
-                        $mail->SMTPAuth = true;
-                        $mail->Username = $smtpUser;
-                        $mail->Password = $smtpPass;
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = $smtpPort;
-                    } else {
-                        $mail->isMail();
-                    }
-
-                    $mail->setFrom($smtpUser, 'InviteMEme');
-                    $mail->addAddress($to);
-                    $mail->Subject = 'Покана: ' . ($inv['title'] ?? 'Invitation');
-
-                    $body = "<p>Здравейте,</p>
+                        $body = "<p>Здравейте,</p>
                             <p>Изпращаме ви покана за презентация:</p>
                             <p><strong>Тема: </strong>" . htmlspecialchars($inv['title']) . "</p>
                             <p><strong>Дата: </strong>" . htmlspecialchars($inv['presentation_date'] ?? '') . "</p>
@@ -90,54 +109,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             <p><strong>Зала: </strong>" . htmlspecialchars($inv['room'] ?? '') . "</p>
                             <p><strong>Презентиращ: </strong>" . htmlspecialchars($inv['first_name'] . ' ' . $inv['last_name']) . "</p>";
 
-                    if (!empty($inv['description'])) {
-                        $body .= "<p><strong>Описание: </strong></p>
+                        if (!empty($inv['description'])) {
+                            $body .= "<p><strong>Описание: </strong></p>
                          <p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
+                        }
+
+                        // Attach generated image if exists
+                        $imageFile = __DIR__ . '/' . $inv['generated_image_path'];
+                        if (!empty($inv['generated_image_path']) && file_exists($imageFile)) {
+                            $mail->addAttachment($imageFile);
+                        }
+
+                        $mail->isHTML(true);
+                        $mail->Body = $body;
+
+                        $mail->send();
+                        $status = 'sent';
+                        $sent_at = date('Y-m-d H:i:s');
+                        $success++;
+                    } catch (Exception $e) {
+                        $status = 'failed';
+                        $sent_at = null;
+                        $failed++;
+                        error_log('send_invitation: mail error to ' . $to . ' - ' . $mail->ErrorInfo);
                     }
 
-                    // Attach generated image if exists
-                    $imageFile = __DIR__ . '/' . $inv['generated_image_path'];
-                    if (!empty($inv['generated_image_path']) && file_exists($imageFile)) {
-                        $mail->addAttachment($imageFile);
-                    }
-
-                    $mail->isHTML(true);
-                    $mail->Body = $body;
-
-                    $mail->send();
-                    $status = 'sent';
-                    $sent_at = date('Y-m-d H:i:s');
-                    $success++;
-                } catch (Exception $e) {
-                    $status = 'failed';
-                    $sent_at = null;
-                    $failed++;
-                    error_log('send_invitation: mail error to ' . $to . ' - ' . $mail->ErrorInfo);
-                }
-
-                // Insert recipient record
-                // Update existing recipient row (pending) if present, otherwise insert new
-                $update = $db->prepare('UPDATE invitation_recipients SET status = :status, sent_at = :sent_at WHERE invitation_id = :invitation_id AND recipient_email = :recipient_email');
-                $update->execute([
-                    ':status' => $status,
-                    ':sent_at' => $sent_at,
-                    ':invitation_id' => $invitation_id,
-                    ':recipient_email' => $to
-                ]);
-
-                if ($update->rowCount() === 0) {
-                    $ins = $db->prepare('INSERT INTO invitation_recipients (invitation_id, recipient_email, status, sent_at) 
-                                             VALUES (:invitation_id, :recipient_email, :status, :sent_at)');
-                    $ins->execute([
-                        ':invitation_id' => $invitation_id,
-                        ':recipient_email' => $to,
+                    // Insert recipient record
+                    $update = $db->prepare('UPDATE invitation_recipients SET status = :status, sent_at = :sent_at WHERE invitation_id = :invitation_id AND recipient_email = :recipient_email');
+                    $update->execute([
                         ':status' => $status,
-                        ':sent_at' => $sent_at
+                        ':sent_at' => $sent_at,
+                        ':invitation_id' => $invitation_id,
+                        ':recipient_email' => $to
                     ]);
-                }
-            }
 
-            $message = "Изпратени имейли: $success, неуспешни: $failed";
+                    if ($update->rowCount() === 0) {
+                        $ins = $db->prepare('INSERT INTO invitation_recipients (invitation_id, recipient_email, status, sent_at) 
+                                             VALUES (:invitation_id, :recipient_email, :status, :sent_at)');
+                        $ins->execute([
+                            ':invitation_id' => $invitation_id,
+                            ':recipient_email' => $to,
+                            ':status' => $status,
+                            ':sent_at' => $sent_at
+                        ]);
+                    }
+                }
+
+                $message = "Изпратени имейли: $success, неуспешни: $failed";
+            }
         }
     }
 }
@@ -147,7 +166,19 @@ $list = $db->prepare('SELECT id, title, presentation_date, presentation_time, ge
 $list->execute(['uid' => $_SESSION['user_id']]);
 $invitations = $list->fetchAll();
 
+$students = [];
+$teachers = [];
+
+foreach ($recipient_list as $recipient) {
+    if ($recipient['role'] === 'teacher') {
+        $teachers[] = $recipient;
+    } else {
+        $students[] = $recipient;
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="bg">
 
@@ -157,17 +188,6 @@ $invitations = $list->fetchAll();
     <title>Изпращане на покани</title>
     <link rel="stylesheet" href="styles/edit_templates.css">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: .5rem;
-            border-bottom: 1px solid #ddd;
-        }
-
         .small-img {
             height: 80px;
             border-radius: 8px;
@@ -199,42 +219,97 @@ $invitations = $list->fetchAll();
         <?php if (empty($invitations)): ?>
             <p>Нямате запазени покани.</p>
         <?php else: ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Заглавие</th>
-                        <th>Дата</th>
-                        <th>Създадено</th>
-                        <th>Картина</th>
-                        <th>Действие</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($invitations as $inv): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($inv['title']); ?></td>
-                            <td><?php echo htmlspecialchars($inv['presentation_date'] . ' ' . $inv['presentation_time']); ?></td>
-                            <td><?php echo htmlspecialchars($inv['created_at']); ?></td>
-                            <td><?php if (!empty($inv['generated_image_path']) && file_exists($inv['generated_image_path'])): ?>
-                                    <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
-                                <?php else: ?> - <?php endif; ?>
-                            </td>
-                            <td>
-                                <form method="POST">
-                                    <input type="hidden" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">
-                                    <input type="hidden" name="action" value="send_all">
-                                    <div class="actions">
+            <form method="POST" id="sendSelectionForm">
+                <input type="hidden" name="action" value="send_selected">
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-size:0.95rem; color:#555; margin:0.5rem 0;">Изберете един или повече имейли от всички регистрирани потребители от този семестър и учители.</p>
+                    <label for="recipient_emails"><strong>Получатели:</strong></label>
+                    <select id="recipient_emails"
+                            name="recipient_emails[]"
+                            multiple
+                            size="12">
 
-                                        <button type="submit">Изпрати на всички студенти (фев-юли)</button>
-                                    </div>
-                                </form>
-                            </td>
+                        <optgroup label="Преподаватели">
+                            <?php foreach ($recipient_list as $r): ?>
+                                <?php if ($r['role'] === 'teacher'): ?>
+                                    <option value="<?= htmlspecialchars($r['email']) ?>">
+                                        <?= htmlspecialchars($r['first_name'].' '.$r['last_name'].' ('.$r['email'].')') ?>
+                                    </option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </optgroup>
+
+                        <optgroup label="Студенти">
+                            <?php foreach ($recipient_list as $r): ?>
+                                <?php if ($r['role'] === 'student'): ?>
+                                    <option value="<?= htmlspecialchars($r['email']) ?>">
+                                        <?= htmlspecialchars($r['first_name'].' '.$r['last_name'].' ('.$r['email'].')') ?>
+                                    </option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </optgroup>
+                    </select>
+                    <div class="recipient-buttons">
+                        <button type="button" id="selectAllBtn">
+                            Избери всички
+                        </button>
+
+                        <button type="button" id="clearBtn">
+                            Изчисти избора
+                        </button>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Заглавие</th>
+                            <th>Дата</th>
+                            <th>Създадено</th>
+                            <th>Картина</th>
+                            <th>Действие</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($invitations as $inv): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($inv['title']); ?></td>
+                                <td><?php echo htmlspecialchars($inv['presentation_date'] . ' ' . $inv['presentation_time']); ?></td>
+                                <td><?php echo htmlspecialchars($inv['created_at']); ?></td>
+                                <td><?php if (!empty($inv['generated_image_path']) && file_exists($inv['generated_image_path'])): ?>
+                                        <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
+                                    <?php else: ?> - <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button type="submit" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">Изпрати на избраните получатели</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </form>
         <?php endif; ?>
     </main>
 </body>
+
+<script>
+    document.getElementById("selectAllBtn").onclick = () => {
+        const options =
+            document.getElementById("recipient_emails").options;
+
+        for (let option of options) {
+            option.selected = true;
+        }
+    };
+
+    document.getElementById("clearBtn").onclick = () => {
+        const options =
+            document.getElementById("recipient_emails").options;
+
+        for (let option of options) {
+            option.selected = false;
+        }
+    };
+</script>
 
 </html>
