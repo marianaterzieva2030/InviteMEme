@@ -6,6 +6,9 @@ $db = (new DatabaseConnection())->getConnection();
 
 initializeDatabase($db);
 
+migrateDatabase($db);
+echo "Migrated successfully!";
+
 $stmt = $db->query("SELECT * FROM users");
 
 echo "<pre>";
@@ -24,13 +27,12 @@ if (!$invitations) {
     }
 }
 
-// migrateDatabase($db);
 
 // $stmt = $db->prepare("SELECT * FROM users WHERE role = 'teacher' LIMIT 1");
 // $stmt->execute();
 // $teacher = $stmt->fetch();
 // echo "Проверка за съществуващ учител: " . ($teacher ? "Намерен " . $teacher['email'] : "Не е намерен") . "<br>";
 
-header("Location: login.html");
+// header("Location: login.html");
 exit;
 ?>
