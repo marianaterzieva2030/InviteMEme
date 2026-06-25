@@ -11,13 +11,16 @@ require_once('../database/connect_db.php');
 $faculty_number = trim($_POST['faculty_number'] ?? '');
 $first_name = trim($_POST['first_name'] ?? '');
 $last_name = trim($_POST['last_name'] ?? '');
+$major = $_POST['major'] ?? '';
+$study_year = $_POST['study_year'] ?? '';
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 
 $errors = [];
 
-if (empty($first_name) || empty($last_name) || empty($email) || empty($password) || empty($confirm_password)) {
+if (empty($first_name) || empty($last_name) || empty($email) || empty($password) 
+	|| empty($confirm_password) || empty($major) || empty($study_year)) {
 	$errors[] = 'Моля, попълнете всички задължителни полета.';
 }
 
@@ -54,16 +57,28 @@ try {
 		exit;
 	}
 
+	// Added current edition fetch from database
+	$edition_stmt = $pdo->prepare("SELECT id FROM course_editions WHERE is_active = 1");
+	$edition_stmt->execute();
+	$edition_id = $edition_stmt->fetchColumn();
+
+	if (!$edition_id) {
+    	die("Няма активно издание на курса.");
+	}
+
 	$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-	$insert = $pdo->prepare("INSERT INTO users (faculty_number, first_name, last_name, email, password_hash) 
-							 VALUES (:faculty_number, :first_name, :last_name, :email, :password_hash)");
+	$insert = $pdo->prepare("INSERT INTO users (faculty_number, first_name, last_name, email, password_hash, major, study_year, edition_id) 
+							 VALUES (:faculty_number, :first_name, :last_name, :email, :password_hash, :major, :study_year, :edition_id)");
 	$insert->execute([
 		'faculty_number' => $faculty_number ?: null,
 		'first_name' => $first_name,
 		'last_name' => $last_name,
 		'email' => $email,
-		'password_hash' => $password_hash
+		'password_hash' => $password_hash,
+		'major' => $major,
+		'study_year' => $study_year,
+		'edition_id' => $edition_id
 	]);
 
 	header('Location: ../login.html');

@@ -111,3 +111,57 @@ button {
 button:hover {
     background: #ff8c00;
 }
+
+/* register */
+.row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.field {
+    flex: 1;
+}
+
+.field input,
+.field select {
+    margin-bottom: 0;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+
+    border: 2px solid var(--light-cyan);
+    border-radius: 8px;
+
+    background-color: white;
+    color: #333;
+
+    font-size: 1rem;
+    font-family: inherit;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* cursor: pointer;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--turquoise) 50%),
+        linear-gradient(135deg, var(--turquoise) 50%, transparent 50%);
+    background-position:
+        calc(100% - 22px) calc(50% - 3px),
+        calc(100% - 16px) calc(50% - 3px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat; */
+}
+
+input:hover, select:hover {
+    border-color: var(--turquoise);
+}
+
+option {
+    padding: 10px;
+}

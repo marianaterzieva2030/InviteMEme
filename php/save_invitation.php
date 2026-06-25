@@ -72,10 +72,11 @@ if ($bytes === false) {
     exit;
 }
 
-$stmt = $db->prepare("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path)
-                     VALUES (:user_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
+$stmt = $db->prepare("INSERT INTO invitations (user_id, edition_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path)
+                     VALUES (:user_id, :edition_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
 $stmt->execute([
     ':user_id' => $_SESSION['user_id'],
+    ':edition_id' => $_SESSION['edition_id'],
     ':template_id' => $template_id,
     ':title' => $title,
     ':presentation_date' => $presentation_date,
