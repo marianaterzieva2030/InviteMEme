@@ -13,6 +13,13 @@ function initializeDatabase(PDO $db): void
         return;
     }
 
+    $db->exec("CREATE TABLE IF NOT EXISTS course_editions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        code VARCHAR(10) NOT NULL UNIQUE,
+        title VARCHAR(100) NOT NULL,
+        is_active BOOLEAN DEFAULT TRUE
+    )");
+
     $db->exec("CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         faculty_number VARCHAR(10) NULL UNIQUE,
@@ -21,7 +28,13 @@ function initializeDatabase(PDO $db): void
         email VARCHAR(255) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
         role ENUM('student', 'teacher') DEFAULT 'student',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        major VARCHAR(100) NULL,
+        study_year INT NULL,
+        edition_id INT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (edition_id)
+            REFERENCES course_editions(id)
     )");
 
     $db->exec("CREATE TABLE IF NOT EXISTS invitation_templates (
@@ -41,6 +54,7 @@ function initializeDatabase(PDO $db): void
     $db->exec("CREATE TABLE IF NOT EXISTS invitations (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
+        edition_id INT NOT NULL,
         template_id INT NULL,
 
         title VARCHAR(255) NOT NULL,
@@ -56,7 +70,10 @@ function initializeDatabase(PDO $db): void
             REFERENCES users(id),
 
         FOREIGN KEY (template_id)
-            REFERENCES invitation_templates(id)
+            REFERENCES invitation_templates(id),
+
+        FOREIGN KEY (edition_id)
+            REFERENCES course_editions(id)
     )");
 
     $db->exec("CREATE TABLE IF NOT EXISTS invitation_recipients (
@@ -75,7 +92,13 @@ function initializeDatabase(PDO $db): void
             ON DELETE CASCADE
     )");
 
-    $db->exec("INSERT INTO users(faculty_number, first_name, last_name, email, password_hash, role)
+    $db->exec("INSERT INTO course_editions (code, title, is_active) 
+        VALUES
+        ('w26', 'WEB технологии 2025/2026', TRUE),
+        ('w25', 'WEB технологии 2024/2025', FALSE)
+    ");
+
+    $db->exec("INSERT INTO users(faculty_number, first_name, last_name, email, password_hash, role, major, study_year, edition_id)
         VALUES
         (
             NULL,
@@ -83,7 +106,10 @@ function initializeDatabase(PDO $db): void
             'Ivanova',
             'invitememe.team@gmail.com',
             '$2y$12$2EeBi7tQoL67cti46g6Zxui/PJY0ILYrEEM3VlEvbj8hIQLj2zaMW',
-            'teacher'
+            'teacher',
+            NULL,
+            NULL,
+            NULL
         ),
         (
             '5MI0600215',
@@ -91,7 +117,10 @@ function initializeDatabase(PDO $db): void
             'Терзиева',
             'materzieva@uni-sofia.bg',
             '$2y$10\$mG7bgSIa4nfk8ez156yJaeqqqufoMg11qz5GVEkTSuajD3ofRk.Sq',
-            'student'
+            'student',
+            'Софтуерно инженерство',
+            3,
+            1
         )
     ");
 
@@ -102,14 +131,93 @@ function initializeDatabase(PDO $db): void
         ('Mountain', 'standard', NULL, 'uploads/templates/pexels-valko23-12149126.jpg', 1)
     ");
 
-    $db->exec("INSERT INTO invitations (user_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path, created_at) 
+    $db->exec("INSERT INTO invitations (user_id, edition_id, template_id, title, presentation_date, presentation_time, room, description, generated_image_path, created_at) 
         VALUES
-        (2, NULL, 'HTML5 Geolocation API', '2026-06-05', '05:03:00', '01', 'Презентиращ: Мариана Терзиева\nЙей', 'uploads/custom/invite_1780987838_07706209ef60.png', '2026-06-09 06:50:38'), 
-        (2, NULL, 'CSS стилове', '2026-06-05', '09:00:00', '01', 'Презентиращ: Мариана Терзиева\nGraphic design is my Passion', 'uploads/custom/invite_1780994673_712b647405d6.png', '2026-06-09 08:44:33'),
-        (2, NULL, 'HTML5 Geolocation API', '2026-06-05', '15:01:00', '301', 'Презентиращ: Мариана Терзиева\nЙей', 'uploads/custom/invite_1781014522_45306616bc15.png', '2026-06-09 14:15:22'),
-        (2, NULL, 'Coffee script', '2026-05-31', '13:02:00', '01', 'Презентиращ: Harry Potter\nЙей', 'uploads/custom/invite_1781015552_0d15bae82536.png', '2026-06-09 14:32:32')
+        (2, 1, NULL, 'HTML5 Geolocation API', '2026-06-05', '05:03:00', '01', 'Презентиращ: Мариана Терзиева\nЙей', 'uploads/custom/invite_1780987838_07706209ef60.png', '2026-06-09 06:50:38'), 
+        (2, 1, NULL, 'CSS стилове', '2026-06-05', '09:00:00', '01', 'Презентиращ: Мариана Терзиева\nGraphic design is my Passion', 'uploads/custom/invite_1780994673_712b647405d6.png', '2026-06-09 08:44:33'),
+        (2, 1, NULL, 'HTML5 Geolocation API', '2026-06-05', '15:01:00', '301', 'Презентиращ: Мариана Терзиева\nЙей', 'uploads/custom/invite_1781014522_45306616bc15.png', '2026-06-09 14:15:22'),
+        (2, 1, NULL, 'Coffee script', '2026-05-31', '13:02:00', '01', 'Презентиращ: Harry Potter\nЙей', 'uploads/custom/invite_1781015552_0d15bae82536.png', '2026-06-09 14:32:32')
     ");
 
     echo "Добавени са начални данни.<br>";
 }
+
+function migrateDatabase(PDO $db): void
+{
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS course_editions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            code VARCHAR(10) NOT NULL UNIQUE,
+            title VARCHAR(100) NOT NULL,
+            is_active BOOLEAN DEFAULT TRUE
+        )
+    ");
+
+    $db->exec("
+        INSERT IGNORE INTO course_editions
+        (id, code, title, is_active)
+        VALUES
+        (1, 'w26', 'WEB технологии 2025/2026', TRUE),
+        (2, 'w25', 'WEB технологии 2024/2025', FALSE)
+    ");
+
+    try {
+        $db->exec("
+            ALTER TABLE users
+            ADD COLUMN major VARCHAR(100) NULL
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+
+    try {
+        $db->exec("
+            ALTER TABLE users
+            ADD COLUMN study_year INT NULL
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+
+    try {
+        $db->exec("
+            ALTER TABLE users
+            ADD COLUMN edition_id INT NULL
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+
+    try {
+        $db->exec("
+            ALTER TABLE users
+            ADD CONSTRAINT fk_users_edition
+            FOREIGN KEY (edition_id)
+            REFERENCES course_editions(id)
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+
+    try {
+        $db->exec("
+            ALTER TABLE invitations
+            ADD COLUMN edition_id INT NOT NULL DEFAULT 1
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+
+    try {
+        $db->exec("
+            ALTER TABLE invitations
+            ADD CONSTRAINT fk_invitations_edition
+            FOREIGN KEY (edition_id)
+            REFERENCES course_editions(id)
+        ");
+    } catch(PDOException $e) {
+        echo $e->getMessage() . "<br>";
+    }
+}
+
 ?>

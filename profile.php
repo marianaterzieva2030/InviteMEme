@@ -8,7 +8,7 @@ if (empty($_SESSION['user_id'])) {
 require 'database/connect_db.php';
 $db = (new DatabaseConnection())->getConnection();
 
-$stmt = $db->prepare('SELECT id, faculty_number, first_name, last_name, email, role, created_at FROM users WHERE id = :id LIMIT 1');
+$stmt = $db->prepare('SELECT id, faculty_number, first_name, last_name, email, role, major, study_year, edition_id, created_at FROM users WHERE id = :id LIMIT 1');
 $stmt->execute([':id' => $_SESSION['user_id']]);
 $user = $stmt->fetch();
 
@@ -18,6 +18,15 @@ if (!$user) {
 }
 
 $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+
+$edition_stmt = $db->prepare('SELECT title FROM course_editions WHERE id = :eid');
+$edition_stmt->execute([':eid' => $_SESSION['edition_id']]);
+$edition_title = $edition_stmt->fetchColumn();
+
+if ($user['role'] == 'student' && !$edition_title) {
+    echo 'Edition not found.';
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -95,16 +104,7 @@ $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))
                 <div class="profile-key">Име</div>
                 <div><?php echo htmlspecialchars($fullName); ?></div>
             </div>
-            <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'student')): ?>
-                <div class="profile-row">
-                    <div class="profile-key">Факултетен номер</div>
-                    <div><?php echo htmlspecialchars($user['faculty_number'] ?? ''); ?></div>
-                </div>
-            <?php endif; ?>
-            <div class="profile-row">
-                <div class="profile-key">Имейл</div>
-                <div><?php echo htmlspecialchars($user['email']); ?></div>
-            </div>
+            
             <?php
             $roleText = $user['role'];
 
@@ -117,6 +117,29 @@ $fullName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''))
             <div class="profile-row">
                 <div class="profile-key">Роля</div>
                 <div><?php echo htmlspecialchars($roleText); ?></div>
+            </div>
+
+            <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'student')): ?>
+                <div class="profile-row">
+                    <div class="profile-key">Факултетен номер</div>
+                    <div><?php echo htmlspecialchars($user['faculty_number'] ?? ''); ?></div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-key">Специалност</div>
+                    <div><?php echo htmlspecialchars($user['major'] ?? ''); ?></div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-key">Курс</div>
+                    <div><?php echo htmlspecialchars($user['study_year'] ?? ''); ?></div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-key">Издание на курса</div>
+                    <div><?php echo htmlspecialchars($edition_title ?? ''); ?></div>
+                </div>
+            <?php endif; ?>
+            <div class="profile-row">
+                <div class="profile-key">Имейл</div>
+                <div><?php echo htmlspecialchars($user['email']); ?></div>
             </div>
             <div class="profile-row">
                 <div class="profile-key">Регистриран на</div>

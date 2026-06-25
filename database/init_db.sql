@@ -11,7 +11,13 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('student', 'teacher') DEFAULT 'student',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    major VARCHAR(100) NULL,
+    study_year INT NULL,
+    edition_id INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (edition_id)
+        REFERENCES course_editions(id)
 );
 
 CREATE TABLE IF NOT EXISTS invitation_templates (
@@ -31,6 +37,7 @@ CREATE TABLE IF NOT EXISTS invitation_templates (
 CREATE TABLE IF NOT EXISTS invitations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    edition_id INT NOT NULL,
     template_id INT NULL,
 
     title VARCHAR(255) NOT NULL,
@@ -46,7 +53,10 @@ CREATE TABLE IF NOT EXISTS invitations (
         REFERENCES users(id),
 
     FOREIGN KEY (template_id)
-        REFERENCES invitation_templates(id)
+        REFERENCES invitation_templates(id),
+
+    FOREIGN KEY (edition_id)
+        REFERENCES course_editions(id)
 );
 
 CREATE TABLE IF NOT EXISTS invitation_recipients (
@@ -66,4 +76,11 @@ CREATE TABLE IF NOT EXISTS invitation_recipients (
 
     -- TO ADD LATER: A recipient can only be associated with a specific invitation once
     -- UNIQUE (invitation_id, recipient_email)
+);
+
+CREATE TABLE IF NOT EXISTS course_editions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(10) NOT NULL UNIQUE,
+    title VARCHAR(100) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE
 );
