@@ -65,20 +65,26 @@
 
 ### Контейнеризация
 - Docker
+- Система за разгръщане FMI HSS Manager
 
 ---
 
-## Структура на проекта
+## Стартиране на проекта
 
-```text
-InviteMEme/
-│
-├── styles/
-├── javascript/
-├── php/
-├── database/
-├── uploads/
-├── images/
-├── vendor/
-└── README.md
-```
+1. Уверете се, че имате инсталиран PHP(https://www.php.net/downloads.php) и XAMPP (https://www.apachefriends.org/)
+2. Стартирайте Apache и MySQL w XAMPP.
+3. Клонирайте или разархивирайте проекта в директория htdocs на XAMPP.
+4. Конфигуриране на връзката към базата данни.
+	- Отворете database/config.php: При липса на ENV променливи (от докера), ще се зададат стойности по подразбиране (които може да промените):
+'host' => getenv('MARIADB_HOST') ?: 'localhost',
+'port' => getenv('MARIADB_PORT') ?: 3306,
+'dbname' => getenv('MARIADB_DATABASE') ?: 'inviteme',
+'username' => getenv('MARIADB_USER') ?: 'root',
+'password' => getenv('MARIADB_PASSWORD') ?: ''
+5. Отворете phpmyadmin.
+6. Импортиране на SQL заявките: 
+	- database/init_db.sql: създаване на базата данни и таблиците ѝ
+	- database/sample_data.sql: примерни данни за тестване
+7. Отвoрете в браузър: http://localhost/InviteMEme
+
+---
