@@ -92,10 +92,10 @@ function initializeDatabase(PDO $db): void
             ON DELETE CASCADE
     )");
 
-    $db->exec("INSERT INTO course_editions (code, title, is_active) 
+    $db->exec("INSERT INTO course_editions (id, code, title, is_active) 
         VALUES
-        ('w26', 'WEB технологии 2025/2026', TRUE),
-        ('w25', 'WEB технологии 2024/2025', FALSE)
+        (1, 'w26', 'WEB технологии 2025/2026', TRUE),
+        (2, 'w25', 'WEB технологии 2024/2025', FALSE)
     ");
 
     $db->exec("INSERT INTO users(faculty_number, first_name, last_name, email, password_hash, role, major, study_year, edition_id)
@@ -144,79 +144,28 @@ function initializeDatabase(PDO $db): void
 
 function migrateDatabase(PDO $db): void
 {
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS course_editions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            code VARCHAR(10) NOT NULL UNIQUE,
-            title VARCHAR(100) NOT NULL,
-            is_active BOOLEAN DEFAULT TRUE
-        )
-    ");
-
-    $db->exec("
-        INSERT IGNORE INTO course_editions
-        (id, code, title, is_active)
-        VALUES
-        (1, 'w26', 'WEB технологии 2025/2026', TRUE),
-        (2, 'w25', 'WEB технологии 2024/2025', FALSE)
-    ");
-
     try {
         $db->exec("
-            ALTER TABLE users
-            ADD COLUMN major VARCHAR(100) NULL
+            UPDATE users
+            SET 
+                major = 'Софтуерно инженерство',
+                study_year = 3,
+                edition_id = 1
+            WHERE role = 'student'
+            AND edition_id IS NULL
         ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
     }
 
     try {
         $db->exec("
-            ALTER TABLE users
-            ADD COLUMN study_year INT NULL
+            UPDATE invitations
+            SET edition_id = 1
+            WHERE edition_id IS NULL
         ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
-    }
-
-    try {
-        $db->exec("
-            ALTER TABLE users
-            ADD COLUMN edition_id INT NULL
-        ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
-    }
-
-    try {
-        $db->exec("
-            ALTER TABLE users
-            ADD CONSTRAINT fk_users_edition
-            FOREIGN KEY (edition_id)
-            REFERENCES course_editions(id)
-        ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
-    }
-
-    try {
-        $db->exec("
-            ALTER TABLE invitations
-            ADD COLUMN edition_id INT NOT NULL DEFAULT 1
-        ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
-    }
-
-    try {
-        $db->exec("
-            ALTER TABLE invitations
-            ADD CONSTRAINT fk_invitations_edition
-            FOREIGN KEY (edition_id)
-            REFERENCES course_editions(id)
-        ");
-    } catch(PDOException $e) {
-        echo $e->getMessage() . "<br>";
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
     }
 }
 
