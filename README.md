@@ -75,12 +75,15 @@
 2. Стартирайте Apache и MySQL w XAMPP.
 3. Клонирайте или разархивирайте проекта в директория htdocs на XAMPP.
 4. Конфигуриране на връзката към базата данни.
-	- Отворете database/config.php: При липса на ENV променливи (от докера), ще се зададат стойности по подразбиране (които може да промените):
-'host' => getenv('MARIADB_HOST') ?: 'localhost',
-'port' => getenv('MARIADB_PORT') ?: 3306,
-'dbname' => getenv('MARIADB_DATABASE') ?: 'inviteme',
-'username' => getenv('MARIADB_USER') ?: 'root',
-'password' => getenv('MARIADB_PASSWORD') ?: ''
+
+Отворете database/config.php: При липса на ENV променливи (от докера), ще се зададат стойности по подразбиране (които може да промените):
+  ```
+        'host' => getenv('MARIADB_HOST') ?: 'localhost',
+        'port' => getenv('MARIADB_PORT') ?: 3306,
+        'dbname' => getenv('MARIADB_DATABASE') ?: 'inviteme',
+        'username' => getenv('MARIADB_USER') ?: 'root',
+        'password' => getenv('MARIADB_PASSWORD') ?: ''
+  ```
 5. Отворете phpmyadmin.
 6. Импортиране на SQL заявките: 
 	- database/init_db.sql: създаване на базата данни и таблиците ѝ
