@@ -222,7 +222,10 @@ foreach ($recipient_list as $recipient) {
             <form method="POST" id="sendSelectionForm">
                 <input type="hidden" name="action" value="send_selected">
                 <div style="margin-bottom: 1rem;">
-                    <p style="font-size:0.95rem; color:#555; margin:0.5rem 0;">Изберете един или повече имейли от всички регистрирани потребители от този семестър и учители.</p>
+                    <p style="font-size:0.95rem; color:#555; margin:0.5rem 0;">
+                        Изберете един или повече имейли от всички 
+                        регистрирани потребители от този семестър.
+                    </p>
                     <label for="recipient_emails"><strong>Получатели:</strong></label>
                     <select id="recipient_emails"
                             name="recipient_emails[]"
@@ -280,8 +283,10 @@ foreach ($recipient_list as $recipient) {
                                         <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
                                     <?php else: ?> - <?php endif; ?>
                                 </td>
-                                <td>
-                                    <button type="submit" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">Изпрати на избраните получатели</button>
+                                <td class="actions">
+                                    <button class="btn" type="submit" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">
+                                        Изпрати на избраните получатели
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -293,23 +298,32 @@ foreach ($recipient_list as $recipient) {
 </body>
 
 <script>
-    document.getElementById("selectAllBtn").onclick = () => {
-        const options =
-            document.getElementById("recipient_emails").options;
+    const recipientSelect = document.getElementById("recipient_emails");
 
-        for (let option of options) {
+    recipientSelect.addEventListener("mousedown", function (e) {
+        if (e.target.tagName !== "OPTION") {
+            return;
+        }
+
+        e.preventDefault();
+
+        e.target.selected = !e.target.selected;
+    });
+
+    const selectAllBtn = document.getElementById("selectAllBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    selectAllBtn.addEventListener("click", () => {
+        Array.from(recipientSelect.options).forEach(option => {
             option.selected = true;
-        }
-    };
+        });
+    });
 
-    document.getElementById("clearBtn").onclick = () => {
-        const options =
-            document.getElementById("recipient_emails").options;
-
-        for (let option of options) {
+    clearBtn.addEventListener("click", () => {
+        Array.from(recipientSelect.options).forEach(option => {
             option.selected = false;
-        }
-    };
+        });
+    });
 </script>
 
 </html>
