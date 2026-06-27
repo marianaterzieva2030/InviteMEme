@@ -144,7 +144,35 @@ function initializeDatabase(PDO $db): void
 
 function migrateDatabase(PDO $db): void
 {
-    // update docker database if needed
+    try {
+        $db->exec("
+            ALTER TABLE course_editions
+            ADD COLUMN facebook_url VARCHAR(255) NULL
+        ");
+    } catch (PDOException $e) {}
+
+    try {
+        $db->exec("
+            ALTER TABLE course_editions
+            ADD COLUMN moodle_url VARCHAR(255) NULL
+        ");
+    } catch (PDOException $e) {}
+
+    try {
+        $db->exec("
+            ALTER TABLE invitations
+            ADD COLUMN fb_link VARCHAR(500) NULL
+        ");
+    } catch (PDOException $e) {}
+
+    try {
+        $db->exec("
+            ALTER TABLE invitations
+            ADD COLUMN is_approved
+            ENUM('pending','approved','declined')
+            NOT NULL DEFAULT 'pending'
+        ");
+    } catch (PDOException $e) {}
 }
 
 ?>
