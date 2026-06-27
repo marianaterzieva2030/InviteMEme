@@ -38,6 +38,7 @@ $rows = $stmt->fetchAll();
 $stmt->execute([':eid' => $edition_id]);
 $rows = $stmt->fetchAll();
 ?>
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -81,7 +82,7 @@ $rows = $stmt->fetchAll();
         </div>
     </header>
     <main>
-        <h2>Статистики: запазени покани и изпратени имейли</h2> <br>
+        <h2>Статистики - запазени покани и изпратени имейли</h2> <br>
         <?php if (empty($rows)): ?>
             <p>Няма записи.</p>
         <?php else: ?>
