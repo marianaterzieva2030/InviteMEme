@@ -46,7 +46,6 @@ if (isset($_GET['saved']) && $_GET['saved'] === '1') {
                 <ul>
                     <li><a href="#" id="active-menu">Създаване на шаблон</a></li>
                     <li><a href="edit_templates.php">Управление на шаблони</a></li>
-                    <li><a href="stats.php">Статистики</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>

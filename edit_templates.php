@@ -82,7 +82,6 @@ $templates = $q->fetchAll();
                 <ul>
                     <li><a href="create_template.php">Създаване на шаблон</a></li>
                     <li><a href="edit_templates.php" id="active-menu">Управление на шаблони</a></li>
-                    <li><a href="stats.php">Статистики</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>

@@ -20,6 +20,8 @@ $stmt = $db->prepare("SELECT u.id AS user_id, u.faculty_number, u.first_name, u.
 $stmt->execute();
 $rows = $stmt->fetchAll();
 
+$edition_id = $_SESSION['teacher_edition_id'];
+
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -27,7 +29,7 @@ $rows = $stmt->fetchAll();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Статистики</title>
-    <link rel="stylesheet" href="styles/edit_templates.css">
+    <link rel="stylesheet" href="styles/course.css">
     <style>
         th,td { padding: .5rem; border-bottom: 1px solid #ddd; }
     </style>
@@ -41,9 +43,22 @@ $rows = $stmt->fetchAll();
 
             <nav>
                 <ul>
+                    <li class="dropdown">
+
+                        <a href="course_edition.php?id=<?= $edition_id ?>">
+                            <?= htmlspecialchars($_SESSION['teacher_edition_code']) ?> ▼
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="course_users.php">Потребители</a></li>
+                            <li><a href="#">Статистики</a></li>
+                            <li><a href="course_settings.php">Настройки</a></li>
+                        </ul>
+
+                    </li>
+
                     <li><a href="create_template.php">Създаване на шаблон</a></li>
                     <li><a href="edit_templates.php">Управление на шаблони</a></li>
-                    <li><a href="#" id="active-menu">Статистики</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>

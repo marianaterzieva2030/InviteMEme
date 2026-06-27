@@ -100,59 +100,6 @@ main {
     line-height: 1.5;
 }
 
-/* course editions in home_teacher.php */
-.dashboard{
-    display:grid;
-    grid-template-columns:
-        repeat(auto-fit,minmax(320px,1fr));
-    gap:30px;
-    margin-top:40px;
-}
-
-.edition-card{
-    display: flex;
-    flex-direction: column;
-
-    background: white;
-    border-radius: 18px;
-    padding: 30px;
-
-    box-shadow: var(--shadow);
-    transition: .25s;
-}
-
-.edition-card p{
-    margin-top: 10px;
-}
-
-.edition-card .btn{
-    margin-top: auto;
-    align-self: flex-end;
-}
-
-.edition-card .badge {
-    margin-top: 10px;
-    align-self: flex-start;
-}
-
-.badge{
-    display:inline-block;
-    padding:6px 12px;
-    border-radius:30px;
-    margin:12px 0;
-    font-weight:bold;
-}
-
-.active{
-    background:#cbf3f0;
-    color:#15806f;
-}
-
-.archive{
-    background:#ececec;
-    color:#666;
-}
-
 .btn {
     display: inline-block;
     background: var(--orange);
@@ -219,4 +166,57 @@ footer {
     padding: 2rem;
     margin-top: 3rem;
     color: #666;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background: var(--orange);
+    color: white;
+    padding: 14px 18px;
+    text-align: left;
+}
+
+td {
+    padding: 16px 18px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background-color: rgba(203, 243, 240, 0.4);
+}
+
+img.template-preview {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+.actions button,
+.actions select {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.actions button {
+    background: var(--orange);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background: var(--turquoise);
 }

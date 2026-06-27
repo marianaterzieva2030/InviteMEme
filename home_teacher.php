@@ -5,6 +5,18 @@ if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'teacher')
     exit;
 }
 $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? ''));
+
+require "database/connect_db.php";
+
+$db = (new DatabaseConnection())->getConnection();
+
+$stmt = $db->query("
+    SELECT *
+    FROM course_editions
+    ORDER BY id ASC
+");
+
+$editions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +33,7 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
 
     <header>
         <div class="header-container">
-            <div class="logo">
+            <div title="Home Page" class="logo">
                 <a id="home-link" href="#">InviteMEme</a>
             </div>
 
@@ -29,7 +41,6 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
                 <ul>
                     <li><a href="create_template.php">Създаване на шаблон</a></li>
                     <li><a href="edit_templates.php">Управление на шаблони</a></li>
-                    <li><a href="stats.php">Статистики</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
@@ -42,48 +53,35 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
         <section class="welcome-card">
             <h1>Добре дошли, <?php echo htmlspecialchars($fullName ?: '[Име Фамилия]'); ?>!</h1>
             <p>
-                Управлявайте шаблоните за покани и следете
-                активността на студентите.
+                Изберете издание на курса и прегледайте участниците в него, 
+                както и статистики за създадените покани.
             </p>
         </section>
 
-        <section class="card-grid">
+        <section class="dashboard">
 
-            <div class="feature-card">
-                <h3>Нов шаблон</h3>
-                <p>
-                    Създайте нов стандартен или meme шаблон
-                    за студентите.
-                </p>
-                <a href="create_template.php" class="btn">Създай</a>
-            </div>
+            <?php foreach($editions as $edition): ?>
+                <div class="edition-card">
+                    <h2><?= htmlspecialchars(strtoupper($edition['code'])) ?></h2>
+                    <p><?= htmlspecialchars($edition['title']) ?></p>
 
-            <div class="feature-card">
-                <h3>Управление на шаблони</h3>
-                <p>
-                    Активирайте, редактирайте или деактивирайте
-                    съществуващи шаблони.
-                </p>
-                <a href="edit_templates.php" class="btn">Управлявай</a>
-            </div>
+                    <?php if($edition['is_active']): ?>
+                        <span class="badge active">
+                            Активно издание
+                        </span>
+                    <?php else: ?>
+                        <span class="badge archive">
+                            Архив
+                        </span>
+                    <?php endif; ?>
+                    
+                    <!-- send edition's id to course_edition.php -->
+                    <a class="btn" href="course_edition.php?id=<?= $edition['id'] ?>">
+                        Отвори
+                    </a>
 
-            <div class="feature-card">
-                <h3>Статистики</h3>
-                <p>
-                    Вижте кои студенти са изпратили покани
-                    по имейл и кои не са.
-                </p>
-                <a href="stats.php" class="btn">Отвори</a>
-            </div>
-
-            <div class="feature-card">
-                <h3>Профил</h3>
-                <p>
-                    Прегледайте профилната информация
-                    и настройките си.
-                </p>
-                <a href="profile.php" class="btn">Към профила</a>
-            </div>
+                </div>
+            <?php endforeach; ?>
 
         </section>
 

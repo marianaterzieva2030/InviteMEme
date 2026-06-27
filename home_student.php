@@ -49,14 +49,14 @@ $fullName = trim(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name']
 
         <section class="card-grid">
 
-        <div class="feature-card">
-            <h3>Създаване на покана</h3>
-            <p>
-                Изберете шаблон или качете собствено изображение,
-                добавете текст и експортирайте като PNG.
-            </p>
-            <a href="create_invitation.php" class="btn">Създай</a>
-        </div>
+            <div class="feature-card">
+                <h3>Създаване на покана</h3>
+                <p>
+                    Изберете шаблон или качете собствено изображение,
+                    добавете текст и експортирайте като PNG.
+                </p>
+                <a href="create_invitation.php" class="btn">Създай</a>
+            </div>
 
             <div class="feature-card">
                 <h3>Изпращане</h3>
