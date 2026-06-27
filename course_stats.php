@@ -5,23 +5,38 @@ if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'teacher')
     exit;
 }
 
+$edition_id = $_SESSION['teacher_edition_id'];
+
 require 'database/connect_db.php';
 $db = (new DatabaseConnection())->getConnection();
 
 // List students who have saved invitations and counts of saved and sent
-$stmt = $db->prepare("SELECT u.id AS user_id, u.faculty_number, u.first_name, u.last_name, u.email,
-    COUNT(i.id) AS saved_count,
-    SUM(CASE WHEN ir.status = 'sent' THEN 1 ELSE 0 END) AS sent_count
+$stmt = $db->prepare(
+    "SELECT u.id AS user_id, u.faculty_number, u.first_name,
+            u.last_name, u.email, u.major, u.study_year, u.edition_id,
+            COUNT(DISTINCT i.id) AS saved_count,
+            COUNT(ir.id) AS sent_count
+
     FROM users u
-    JOIN invitations i ON i.user_id = u.id
-    LEFT JOIN invitation_recipients ir ON ir.invitation_id = i.id
+
+    LEFT JOIN invitations i ON i.user_id = u.id
+
+    LEFT JOIN invitation_recipients ir
+        ON ir.invitation_id = i.id
+        AND ir.status = 'sent'
+
+    WHERE
+        u.role = 'student'
+        AND u.edition_id = :eid
+
     GROUP BY u.id
-    ORDER BY saved_count DESC");
-$stmt->execute();
+    ORDER BY saved_count DESC
+");
+
+$stmt->execute([':eid' => $edition_id]);
 $rows = $stmt->fetchAll();
-
-$edition_id = $_SESSION['teacher_edition_id'];
-
+$stmt->execute([':eid' => $edition_id]);
+$rows = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -37,7 +52,7 @@ $edition_id = $_SESSION['teacher_edition_id'];
 <body>
     <header>
         <div class="header-container">
-            <div class="logo">
+            <div title="Home Page" class="logo">
                 <a id="home-link" href="home_teacher.php">InviteMEme</a>
             </div>
 

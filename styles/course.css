@@ -220,3 +220,38 @@ img.template-preview {
 .actions button:hover {
     background: var(--turquoise);
 }
+
+
+.filters{
+    display:flex;
+    gap:18px;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.filters label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+.filters select{
+    min-width:180px;
+    padding:10px 12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    background:white;
+}
+
+.filters button{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background-color: var(--light-orange);
+}
+
+.filters button:hover{
+    background-color: var(--orange);
+}

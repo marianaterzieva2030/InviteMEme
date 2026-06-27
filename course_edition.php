@@ -59,7 +59,7 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
 
                         <ul class="dropdown-menu">
                             <li><a href="course_users.php">Потребители</a></li>
-                            <li><a href="stats.php">Статистики</a></li>
+                            <li><a href="course_stats.php">Статистики</a></li>
                             <li><a href="course_settings.php">Настройки</a></li>
                         </ul>
 
@@ -91,7 +91,7 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                     Проверете кои са регистриралите се 
                     потребители.
                 </p>
-                <a href="create_invitation.php" class="btn">Вижте</a>
+                <a href="course_users.php" class="btn">Вижте</a>
             </div>
 
             <div class="feature-card">
@@ -100,7 +100,7 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                     Достъп до статистики за изданието с 
                     филтри по специалност и курс.
                 </p>
-                <a href="status.php" class="btn">Вижте</a>
+                <a href="course_stats.php" class="btn">Вижте</a>
             </div>
 
             <div class="feature-card">
@@ -109,7 +109,7 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                     Управлявайте статуса, полезните линкове и 
                     друга информация за изданието.
                 </p>
-                <a href="profile.php" class="btn">Към настройките</a>
+                <a href="course_settings.php" class="btn">Към настройките</a>
             </div>
 
         </section>
