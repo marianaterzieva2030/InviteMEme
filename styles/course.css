@@ -306,3 +306,39 @@ img.template-preview {
     margin-bottom: 20px;
     font-weight: 600;
 }
+
+/* course_stats */
+.small-img{
+    width: 90px;
+    border-radius: 10px;
+}
+
+.status{
+    box-shadow: var(--shadow);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 20px;
+    font-weight: 800;
+}
+
+.status-select{
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.status-pending{
+    background: var(--orange);
+    color: white;
+}
+
+.status-approved{
+    background: #2a7f3e;
+    color: white;
+}
+
+.status-declined{
+    background: #d34250;
+    color: white;
+}

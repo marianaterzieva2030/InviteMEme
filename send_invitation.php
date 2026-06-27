@@ -16,27 +16,27 @@ use PHPMailer\PHPMailer\Exception;
 $message = '';
 $selected_recipients = [];
 
-$year = date('Y');
-$start = "$year-02-01 00:00:00";
-$end = "$year-07-31 23:59:59";
-
 $recipientQuery = $db->prepare(
     'SELECT id, first_name, last_name, email, role
      FROM users
      WHERE email IS NOT NULL
        AND id <> :uid
-       AND (created_at BETWEEN :start AND :end OR role = "teacher")
+       AND (edition_id = :eid OR role = "teacher")
      ORDER BY CASE WHEN role = "teacher" THEN 0 ELSE 1 END, first_name, last_name'
 );
 $recipientQuery->execute([
     ':uid' => $_SESSION['user_id'],
-    ':start' => $start,
-    ':end' => $end
+    'eid' => $_SESSION['edition_id']
 ]);
+
 $recipient_list = $recipientQuery->fetchAll();
 $allowedEmails = array_column($recipient_list, 'email');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_selected' && !empty($_POST['invitation_id'])) {
+// send invitation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) 
+    && $_POST['action'] === 'send_selected'
+    && !empty($_POST['invitation_id']))
+{
     $invitation_id = (int)$_POST['invitation_id'];
     $selected_recipients = $_POST['recipient_emails'] ?? [];
 
@@ -57,19 +57,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Fetch invitation (ensure owner)
             $stmt = $db->prepare(
                 "SELECT i.*, 
-            u.first_name, 
-            u.last_name, 
-            u.faculty_number, 
-            u.email AS user_email
-        FROM invitations i
-        JOIN users u ON u.id = i.user_id
-        WHERE i.id = :id AND i.user_id = :uid
-        LIMIT 1"
+                u.first_name, 
+                u.last_name, 
+                u.faculty_number, 
+                u.email AS user_email
+                FROM invitations i
+                JOIN users u ON u.id = i.user_id
+                WHERE i.id = :id AND i.user_id = :uid
+                LIMIT 1"
             );
+
             $stmt->execute(['id' => $invitation_id, 'uid' => $_SESSION['user_id']]);
             $inv = $stmt->fetch();
+    
             if (!$inv) {
-                $message = 'Invitation not found.';
+                $message = 'Поканата не е намерена.';
+            } else if ($inv['is_approved'] !== 'approved') {
+                $message = 'Тази покана не е одобрена за изпращане.';
             } else {
                 $success = 0;
                 $failed = 0;
@@ -111,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                         if (!empty($inv['description'])) {
                             $body .= "<p><strong>Описание: </strong></p>
-                         <p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
+                        <p>" . nl2br(htmlspecialchars($inv['description'])) . "</p>";
                         }
 
                         // Attach generated image if exists
@@ -145,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                     if ($update->rowCount() === 0) {
                         $ins = $db->prepare('INSERT INTO invitation_recipients (invitation_id, recipient_email, status, sent_at) 
-                                             VALUES (:invitation_id, :recipient_email, :status, :sent_at)');
+                                            VALUES (:invitation_id, :recipient_email, :status, :sent_at)');
                         $ins->execute([
                             ':invitation_id' => $invitation_id,
                             ':recipient_email' => $to,
@@ -162,7 +166,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // List invitations for current user
-$list = $db->prepare('SELECT id, title, presentation_date, presentation_time, generated_image_path, created_at FROM invitations WHERE user_id = :uid ORDER BY created_at DESC');
+$list = $db->prepare(
+    "SELECT
+        id,
+        title,
+        presentation_date,
+        presentation_time,
+        generated_image_path,
+        created_at,
+        is_approved
+    FROM invitations
+    WHERE user_id = :uid
+    ORDER BY created_at DESC
+");
 $list->execute(['uid' => $_SESSION['user_id']]);
 $invitations = $list->fetchAll();
 
@@ -283,10 +299,25 @@ foreach ($recipient_list as $recipient) {
                                         <img src="<?= htmlspecialchars($inv['generated_image_path']); ?>" class="small-img" alt="inv">
                                     <?php else: ?> - <?php endif; ?>
                                 </td>
+
                                 <td class="actions">
-                                    <button class="btn" type="submit" name="invitation_id" value="<?php echo (int)$inv['id']; ?>">
-                                        Изпрати на избраните получатели
+                                <?php if ($inv['is_approved'] === 'approved'): ?>
+                                    <button class="btn" type="submit" name="invitation_id" 
+                                            value="<?= (int)$inv['id'] ?>">
+                                        Изпрати
                                     </button>
+
+                                <?php elseif ($inv['is_approved'] === 'pending'): ?>
+                                    <span style="color:#e67e22;font-weight:bold;">
+                                        Очаква одобрение
+                                    </span>
+
+                                <?php else: ?>
+                                    <span style="color:#c0392b;font-weight:bold;">
+                                        Не е одобрена
+                                    </span>
+
+                                <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
