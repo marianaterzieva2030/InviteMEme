@@ -9,7 +9,39 @@ if (empty($_SESSION['user_id'])) {
 require 'database/connect_db.php';
 $db = (new DatabaseConnection())->getConnection();
 
-$stmt = $db->prepare("SELECT id, title, presentation_date, presentation_time, room, generated_image_path, created_at FROM invitations WHERE user_id = :uid ORDER BY created_at DESC");
+if(isset($_POST['save_fb'])) {
+    $stmt=$db->prepare(
+        "UPDATE invitations
+        SET fb_link=:fb
+        WHERE id=:id AND user_id=:uid AND is_approved='approved'
+    ");
+
+    $stmt->execute([
+        ':fb'=>trim($_POST['fb_link']),
+        ':id'=>(int)$_POST['invitation_id'],
+        ':uid'=>$_SESSION['user_id']
+    ]);
+
+    header("Location: status.php?saved=1");
+    exit;
+}
+
+$stmt = $db->prepare(
+    "SELECT 
+        id, 
+        title, 
+        presentation_date, 
+        presentation_time, 
+        room, 
+        generated_image_path, 
+        created_at,
+        is_approved,
+        fb_link
+    FROM invitations 
+    WHERE user_id = :uid 
+    ORDER BY created_at DESC
+");
+
 $stmt->execute([':uid' => $_SESSION['user_id']]);
 $invitations = $stmt->fetchAll();
 
@@ -75,6 +107,7 @@ foreach ($invitations as $inv) {
                         <th>Създадена</th>
                         <th>Статус</th>
                         <th>Действия</th>
+                        <th>Линк FB</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -118,6 +151,32 @@ foreach ($invitations as $inv) {
                                         <a class="btn" href="<?= htmlspecialchars($img) ?>" download>Изтегли PNG</a>
                                     <?php else: ?>
                                         -
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($inv['is_approved']!='approved'): ?>
+                                    <span style="color:#888;">
+                                        Достъпно след одобрение
+                                    </span>
+
+                                    <?php else: ?>
+                                    <form method="POST">
+
+                                        <input
+                                            type="hidden"
+                                            name="invitation_id"
+                                            value="<?= $inv['id'] ?>">
+
+                                        <input
+                                            type="url"
+                                            name="fb_link"
+                                            value="<?= htmlspecialchars($inv['fb_link']) ?>"
+                                            placeholder="https://facebook.com/...">
+
+                                        <button class="btn" name="save_fb">
+                                            Запази
+                                        </button>
+                                    </form>
                                     <?php endif; ?>
                                 </td>
                             </tr>

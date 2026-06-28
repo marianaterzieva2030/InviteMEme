@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS invitations (
     generated_image_path VARCHAR(255) NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fb_link VARCHAR(500) NULL,
+    is_approved ENUM ('pending', 'approved', 'declined') DEFAULT 'pending',
 
     FOREIGN KEY (user_id)
         REFERENCES users(id),

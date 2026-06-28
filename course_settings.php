@@ -120,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input
                     type="url"
                     name="facebook_url"
-                    value="<?= htmlspecialchars($edition['facebook_url']) ?>">
+                    value="<?= htmlspecialchars($edition['facebook_url'] ?? '') ?>">
 
                 <label>Moodle</label>
                 <input
                     type="url"
                     name="moodle_url"
-                    value="<?= htmlspecialchars($edition['moodle_url']) ?>">
+                    value="<?= htmlspecialchars($edition['moodle_url']) ?? '' ?>">
 
                 <label class="checkbox">
 

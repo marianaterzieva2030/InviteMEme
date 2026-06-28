@@ -144,7 +144,7 @@ function initializeDatabase(PDO $db): void
 
 function migrateDatabase(PDO $db): void
 {
-    // update docker database if needed
+    // make changes to the database if needed
 }
 
 ?>
