@@ -60,7 +60,7 @@ if (isset($_GET['error'])) {
     <header>
         <div class="header-container">
             <div class="logo">
-                <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                <?php if ((($user['role'] ?? $_SESSION['user_role'] ?? '') === 'teacher')): ?>
                     <a id="home-link" href="home_teacher.php">InviteMEme</a>
                 <?php else: ?>
                     <a id="home-link" href="home_student.php">InviteMEme</a>
@@ -69,7 +69,7 @@ if (isset($_GET['error'])) {
 
             <nav>
                 <ul>
-                    <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                    <?php if ((($user['role'] ?? $_SESSION['user_role'] ?? '') === 'teacher')): ?>
                         <li><a href="create_template.php">Създаване на шаблон</a></li>
                         <li><a href="edit_templates.php">Управление на шаблони</a></li>
                         <li><a href="create_invitation.php" id="active-menu">Създаване на покана</a></li>

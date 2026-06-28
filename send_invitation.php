@@ -217,7 +217,7 @@ foreach ($recipient_list as $recipient) {
     <header>
         <div class="header-container">
             <div class="logo">
-                <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                <?php if ((($user['role'] ?? $_SESSION['user_role'] ?? '') === 'teacher')): ?>
                     <a id="home-link" href="home_teacher.php">InviteMEme</a>
                 <?php else: ?>
                     <a id="home-link" href="home_student.php">InviteMEme</a>
