@@ -130,11 +130,11 @@ $templates = $q->fetchAll();
 
         <div class="import-export-buttons">
             <button type="submit" form="exportForm" class="btn">
-                Export JSON
+                Export 
             </button>
 
             <a href="import_templates.php" class="btn">
-                Import JSON
+                Import 
             </a>
         </div>
 

@@ -62,15 +62,21 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Статистики</title>
     <link rel="stylesheet" href="styles/course.css">
     <style>
-        th,td { padding: .5rem; border-bottom: 1px solid #ddd; }
+        th,
+        td {
+            padding: .5rem;
+            border-bottom: 1px solid #ddd;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -104,28 +110,39 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </header>
     <main>
         <h2>Регистрирани потребители в курса</h2> <br>
+
+        <div class="import-export-buttons">
+            <button type="submit" form="exportForm" class="btn">
+                Export студенти
+            </button>
+
+            <a href="import_students.php" class="btn">
+                Import студенти
+            </a>
+        </div>
+
         <form method="GET" class="filters">
             <label>Курс</label>
             <select name="study_year">
                 <option value="">Всички</option>
 
                 <option value="1"
-                    <?= $studyYear=='1'?'selected':'' ?>>
+                    <?= $studyYear == '1' ? 'selected' : '' ?>>
                     1
                 </option>
 
                 <option value="2"
-                    <?= $studyYear=='2'?'selected':'' ?>>
+                    <?= $studyYear == '2' ? 'selected' : '' ?>>
                     2
                 </option>
 
                 <option value="3"
-                    <?= $studyYear=='3'?'selected':'' ?>>
+                    <?= $studyYear == '3' ? 'selected' : '' ?>>
                     3
                 </option>
 
                 <option value="4"
-                    <?= $studyYear=='4'?'selected':'' ?>>
+                    <?= $studyYear == '4' ? 'selected' : '' ?>>
                     4
                 </option>
             </select>
@@ -137,22 +154,22 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <option value="">Всички</option>
 
                 <option value="Софтуерно инженерство"
-                    <?= $major=='Софтуерно инженерство'?'selected':'' ?>>
+                    <?= $major == 'Софтуерно инженерство' ? 'selected' : '' ?>>
                     Софтуерно инженерство
                 </option>
 
                 <option value="Компютърни науки"
-                    <?= $major=='Компютърни науки'?'selected':'' ?>>
+                    <?= $major == 'Компютърни науки' ? 'selected' : '' ?>>
                     Компютърни науки
                 </option>
 
                 <option value="Информатика"
-                    <?= $major=='Информатика'?'selected':'' ?>>
+                    <?= $major == 'Информатика' ? 'selected' : '' ?>>
                     Информатика
                 </option>
 
                 <option value="Информационни системи"
-                    <?= $major=='Информационни системи'?'selected':'' ?>>
+                    <?= $major == 'Информационни системи' ? 'selected' : '' ?>>
                     Информационни системи
                 </option>
 
@@ -163,22 +180,22 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <select name="sort">
 
                 <option value="name_asc"
-                    <?= $sort=='name_asc'?'selected':'' ?>>
+                    <?= $sort == 'name_asc' ? 'selected' : '' ?>>
                     Име ↑
                 </option>
 
                 <option value="name_desc"
-                    <?= $sort=='name_desc'?'selected':'' ?>>
+                    <?= $sort == 'name_desc' ? 'selected' : '' ?>>
                     Име ↓
                 </option>
 
                 <option value="faculty_asc"
-                    <?= $sort=='faculty_asc'?'selected':'' ?>>
+                    <?= $sort == 'faculty_asc' ? 'selected' : '' ?>>
                     Фак. номер ↑
                 </option>
 
                 <option value="faculty_desc"
-                    <?= $sort=='faculty_desc'?'selected':'' ?>>
+                    <?= $sort == 'faculty_desc' ? 'selected' : '' ?>>
                     Фак. номер ↓
                 </option>
 
@@ -190,20 +207,29 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <p>Няма записи.</p>
         <?php else: ?>
             <table>
-                <thead><tr><th>Студент</th><th>Фак. номер</th><th>Имейл</th><th>Курс</th><th>Специалност</th></tr></thead>
-                <tbody>
-                <?php foreach ($users as $u): ?>
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars(trim($u['first_name'] . ' ' . $u['last_name'])); ?></td>
-                        <td><?php echo htmlspecialchars($u['faculty_number'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($u['email']); ?></td>
-                        <td><?php echo htmlspecialchars($u['study_year']); ?></td>
-                        <td><?php echo htmlspecialchars($u['major']); ?></td>
+                        <th>Студент</th>
+                        <th>Фак. номер</th>
+                        <th>Имейл</th>
+                        <th>Курс</th>
+                        <th>Специалност</th>
                     </tr>
-                <?php endforeach; ?>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $u): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars(trim($u['first_name'] . ' ' . $u['last_name'])); ?></td>
+                            <td><?php echo htmlspecialchars($u['faculty_number'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($u['email']); ?></td>
+                            <td><?php echo htmlspecialchars($u['study_year']); ?></td>
+                            <td><?php echo htmlspecialchars($u['major']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php endif; ?>
     </main>
 </body>
+
 </html>
