@@ -36,7 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $check = $db->prepare("
                 SELECT COUNT(*) 
                 FROM users 
-                WHERE email = :email AND edition_id = :eid
+                WHERE email = :email 
+                AND role = 'student'
+                AND edition_id = :eid
             ");
 
             $insert = $db->prepare("
