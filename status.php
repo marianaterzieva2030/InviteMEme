@@ -105,11 +105,33 @@ foreach ($invitations as $inv) {
             </div>
             <nav>
                 <ul>
-                    <li><a href="create_invitation.php">Създаване на покана</a></li>
-                    <li><a href="send_invitation.php">Изпращане</a></li>
-                    <li><a href="#" id="active-menu">Статус</a></li>
-                    <li><a href="profile.php">Профил</a></li>
-                    <li><a href="auth/logout.php">Изход</a></li>
+                    <?php if ($_SESSION['user_role'] === 'teacher'): ?>
+                        <li class="dropdown">
+                            <a href="course_edition.php?id=<?= $_SESSION['teacher_edition_id'] ?>">
+                                <?= htmlspecialchars($_SESSION['teacher_edition_code']) ?> ▼
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <li><a href="course_users.php">Потребители</a></li>
+                                <li><a href="course_stats.php">Статистики</a></li>
+                                <li><a href="create_invitation.php">Създаване на покана</a></li>
+                                <li><a href="send_invitation.php">Изпращане</a></li>
+                                <li><a href="#">Статус</a></li>
+                                <li><a href="course_settings.php">Настройки</a></li>
+                            </ul>
+
+                        </li>
+                        <li><a href="create_template.php">Създаване на шаблон</a></li>
+                        <li><a href="edit_templates.php">Управление на шаблони</a></li>
+                        <li><a href="profile.php">Профил</a></li>
+                        <li><a href="auth/logout.php">Изход</a></li>
+                    <?php else: ?>
+                        <li><a href="create_invitation.php" id="active-menu">Създаване на покана</a></li>
+                        <li><a href="send_invitation.php">Изпращане</a></li>
+                        <li><a href="status.php">Статус</a></li>
+                        <li><a href="profile.php">Профил</a></li>
+                        <li><a href="auth/logout.php">Изход</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>

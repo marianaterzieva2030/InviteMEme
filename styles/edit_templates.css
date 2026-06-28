@@ -275,3 +275,42 @@ img.template-preview {
 .recipient-buttons button:hover {
     background: var(--turquoise);
 }
+
+
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    min-width: 220px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
+    display: none;
+    padding: 8px 0;
+    z-index: 100;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li {
+    list-style: none;
+}
+
+.dropdown-menu a {
+    display: block;
+    color: #333;
+    padding: 10px 18px;
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background: #cbf3f0;
+}
