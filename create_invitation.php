@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 require "database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
-$stmtUser = $db->prepare("SELECT first_name, last_name, faculty_number FROM users WHERE id = :id LIMIT 1");
+$stmtUser = $db->prepare("SELECT first_name, last_name, faculty_number, role FROM users WHERE id = :id LIMIT 1");
 $stmtUser->execute([':id' => $_SESSION['user_id']]);
 $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
 $isTeacher = ($_SESSION['user_role'] === 'teacher');
@@ -60,16 +60,30 @@ if (isset($_GET['error'])) {
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="home_student.php">InviteMEme</a>
+                <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                    <a id="home-link" href="home_teacher.php">InviteMEme</a>
+                <?php else: ?>
+                    <a id="home-link" href="home_student.php">InviteMEme</a>
+                <?php endif; ?>
             </div>
 
             <nav>
                 <ul>
-                    <li><a href="#" id="active-menu">Създаване на покана</a></li>
-                    <li><a href="send_invitation.php">Изпращане</a></li>
-                    <li><a href="status.php">Статус</a></li>
-                    <li><a href="profile.php">Профил</a></li>
-                    <li><a href="auth/logout.php">Изход</a></li>
+                    <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                        <li><a href="create_template.php">Създаване на шаблон</a></li>
+                        <li><a href="edit_templates.php">Управление на шаблони</a></li>
+                        <li><a href="create_invitation.php" id="active-menu">Създаване на покана</a></li>
+                        <li><a href="send_invitation.php">Изпращане</a></li>
+                        <li><a href="status.php">Статус</a></li>
+                        <li><a href="profile.php">Профил</a></li>
+                        <li><a href="auth/logout.php">Изход</a></li>
+                    <?php else: ?>
+                        <li><a href="create_invitation.php" id="active-menu">Създаване на покана</a></li>
+                        <li><a href="send_invitation.php">Изпращане</a></li>
+                        <li><a href="status.php">Статус</a></li>
+                        <li><a href="profile.php">Профил</a></li>
+                        <li><a href="auth/logout.php">Изход</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>

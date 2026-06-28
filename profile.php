@@ -82,7 +82,7 @@ if ($user['role'] == 'student' && !$edition_title) {
                 <ul>
                     <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
                         <li><a href="create_template.php">Създаване на шаблон</a></li>
-                        <li><a href="edit_templates.php">Управление на шаблони</a></li>                        
+                        <li><a href="edit_templates.php">Управление на шаблони</a></li>
                         <li><a href="create_invitation.php">Създаване на покана</a></li>
                         <li><a href="profile.php" id="active-menu">Профил</a></li>
                         <li><a href="auth/logout.php">Изход</a></li>
@@ -104,7 +104,7 @@ if ($user['role'] == 'student' && !$edition_title) {
                 <div class="profile-key">Име</div>
                 <div><?php echo htmlspecialchars($fullName); ?></div>
             </div>
-            
+
             <?php
             $roleText = $user['role'];
 

@@ -1,7 +1,7 @@
- --CREATE DATABASE IF NOT EXISTS inviteme;
+-- CREATE DATABASE IF NOT EXISTS inviteme;
 
 
- --USE inviteme;
+-- USE inviteme;
  
  CREATE TABLE IF NOT EXISTS course_editions (
     id INT AUTO_INCREMENT PRIMARY KEY,

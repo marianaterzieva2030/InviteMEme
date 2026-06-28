@@ -66,7 +66,8 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                     </li>
 
                     <li><a href="create_template.php">Създаване на шаблон</a></li>
-                    <li><a href="edit_templates.php">Управление на шаблони</a></li>
+                    <li><a href="edit_templates.php">Управление на шаблони</a></li>                        
+                    <li><a href="create_invitation.php">Създаване на покана</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>

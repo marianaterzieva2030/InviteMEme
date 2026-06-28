@@ -4,6 +4,7 @@
     --white: #ffffff;
     --light-cyan: #cbf3f0;
     --turquoise: #2ec4b6;
+
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -15,8 +16,8 @@
 
 body {
     font-family: "Segoe UI", sans-serif;
-    background: var(--light-cyan);
-    color: #222;
+    background-color: var(--light-cyan);
+    color: #333;
 }
 
 header {
@@ -53,8 +54,15 @@ nav a,
     transition: 0.3s;
 }
 
-nav a:hover, #active-menu {
+nav a:hover,
+#active-menu {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 
 h2 {
