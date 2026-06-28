@@ -114,15 +114,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main>
         <h2>Регистрирани потребители в курса</h2> <br>
 
-        <div class="import-export-buttons">
-            <button type="submit" form="exportForm" class="btn">
-                Export студенти
-            </button>
-
-            <a href="import_students.php" class="btn">
-                Import студенти
-            </a>
-        </div>
 
         <form method="GET" class="filters">
             <label>Курс</label>
@@ -206,33 +197,64 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <button class="btn" type="submit">Приложи</button>
         </form>
+        <br>
+
+        <div class="import-export-buttons">
+            <button type="submit" form="exportStudentsForm" class="btn">
+                Export
+            </button>
+
+            <a href="import_students.php" class="btn">
+                Import
+            </a>
+        </div>
+
         <?php if (empty($users)): ?>
             <p>Няма записи.</p>
         <?php else: ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Студент</th>
-                        <th>Фак. номер</th>
-                        <th>Имейл</th>
-                        <th>Курс</th>
-                        <th>Специалност</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $u): ?>
+            <form id="exportStudentsForm" method="POST" action="export_students.php">
+                <table>
+                    <thead>
                         <tr>
-                            <td><?php echo htmlspecialchars(trim($u['first_name'] . ' ' . $u['last_name'])); ?></td>
-                            <td><?php echo htmlspecialchars($u['faculty_number'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($u['email']); ?></td>
-                            <td><?php echo htmlspecialchars($u['study_year']); ?></td>
-                            <td><?php echo htmlspecialchars($u['major']); ?></td>
+                            <th>
+                                <input type="checkbox" id="selectAllStudents">
+                            </th>
+                            <th>Студент</th>
+                            <th>Фак. номер</th>
+                            <th>Имейл</th>
+                            <th>Курс</th>
+                            <th>Специалност</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($users as $u): ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                        class="studentCheckbox"
+                                        name="student_ids[]"
+                                        form="exportStudentsForm"
+                                        value="<?= $u['id'] ?>">
+                                </td>
+                                <td><?php echo htmlspecialchars(trim($u['first_name'] . ' ' . $u['last_name'])); ?></td>
+                                <td><?php echo htmlspecialchars($u['faculty_number'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                <td><?php echo htmlspecialchars($u['study_year']); ?></td>
+                                <td><?php echo htmlspecialchars($u['major']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </form>
         <?php endif; ?>
     </main>
 </body>
 
 </html>
+<script>
+    document.getElementById('selectAllStudents').addEventListener('change', function() {
+        document.querySelectorAll('.studentCheckbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+    });
+</script>

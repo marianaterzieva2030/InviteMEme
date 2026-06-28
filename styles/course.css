@@ -123,6 +123,13 @@ a.btn {
     background: var(--turquoise);
 }
 
+.import-export-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin: 10px 0;
+}
+        
 .dropdown {
     position: relative;
 }
