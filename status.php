@@ -36,15 +36,28 @@ $stmt = $db->prepare(
         room, 
         generated_image_path, 
         created_at,
+        edition_id,
         is_approved,
         fb_link
     FROM invitations 
-    WHERE user_id = :uid 
+    WHERE user_id = :uid AND edition_id = :eid
     ORDER BY created_at DESC
 "
 );
 
-$stmt->execute([':uid' => $_SESSION['user_id']]);
+if ($_SESSION['user_role'] === 'student') {
+    $stmt->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['edition_id']]
+    );
+}
+else {
+    $stmt->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['teacher_edition_id']]
+    );
+}
+
 $invitations = $stmt->fetchAll();
 
 // Aggregate recipient statuses for each invitation
@@ -74,14 +87,12 @@ foreach ($invitations as $inv) {
 ?>
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Статус на поканите</title>
     <link rel="stylesheet" href="styles/edit_templates.css">
 </head>
-
 <body>
     <header>
         <div class="header-container">
@@ -107,71 +118,71 @@ foreach ($invitations as $inv) {
     <main>
         <h2>Статус на поканите</h2>
         <p>Тук са показани всички запазени покани и статусът им.</p> <br>
-        <table>
-            <thead>
-                <tr>
-                    <th>Преглед</th>
-                    <th>Тема</th>
-                    <th>Дата / Час</th>
-                    <th>Зала</th>
-                    <th>Създадена</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                    <th>Линк FB</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($invitations)): ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Преглед</th>
+                        <th>Тема</th>
+                        <th>Дата / Час</th>
+                        <th>Зала</th>
+                        <th>Създадена</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                        <th>Линк FB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($invitations)): ?>
                     <tr>
                         <td colspan="7">Няма запазени покани.</td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($invitations as $inv):
-                        $meta = $statusMap[$inv['id']];
-                        $status = $meta['status'];
-                        $counts = $meta['counts'];
-                        $img = $inv['generated_image_path'];
-                    ?>
-                        <tr>
-                            <td>
-                                <?php if ($img): ?>
-                                    <img src="<?= htmlspecialchars($img) ?>" class="template-preview" alt="preview">
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            </td>
-                            <td><?= htmlspecialchars($inv['title']) ?></td>
-                            <td><?= htmlspecialchars($inv['presentation_date']) ?> <?= htmlspecialchars($inv['presentation_time']) ?></td>
-                            <td><?= htmlspecialchars($inv['room']) ?></td>
-                            <td><?= htmlspecialchars($inv['created_at']) ?></td>
-                            <td>
-                                <?php if ($status === 'pending'): ?>
-                                    <strong style="color:#f39c12;">Очаква изпращане</strong>
-                                <?php elseif ($status === 'sent'): ?>
-                                    <strong style="color:green;">Изпратена</strong>
-                                <?php elseif ($status === 'failed'): ?>
-                                    <strong style="color:#e74c3c;">Неуспешна</strong>
-                                <?php else: ?>
-                                    <strong>Смесено</strong>
-                                <?php endif; ?>
-                                <div style="font-size:0.85rem; color:#666; margin-top:6px;">
-                                    <?= $counts['sent'] ?> изпратени / <?= $counts['failed'] ?> неуспешни / <?= $counts['pending'] ?> очакващи
-                                </div>
-                            </td>
-                            <td class="actions">
-                                <?php if ($img && file_exists(__DIR__ . '/' . $img)): ?>
-                                    <a class="btn" href="<?= htmlspecialchars($img) ?>" download>Изтегли PNG</a>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if ($inv['is_approved'] != 'approved'): ?>
+                    <?php else: ?>
+                        <?php foreach ($invitations as $inv):
+                            $meta = $statusMap[$inv['id']];
+                            $status = $meta['status'];
+                            $counts = $meta['counts'];
+                            $img = $inv['generated_image_path'];
+                        ?>
+                            <tr>
+                                <td>
+                                    <?php if ($img): ?>
+                                        <img src="<?= htmlspecialchars($img) ?>" class="template-preview" alt="preview">
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= htmlspecialchars($inv['title']) ?></td>
+                                <td><?= htmlspecialchars($inv['presentation_date']) ?> <?= htmlspecialchars($inv['presentation_time']) ?></td>
+                                <td><?= htmlspecialchars($inv['room']) ?></td>
+                                <td><?= htmlspecialchars($inv['created_at']) ?></td>
+                                <td>
+                                    <?php if ($status === 'pending'): ?>
+                                        <strong style="color:#f39c12;">Очаква изпращане</strong>
+                                    <?php elseif ($status === 'sent'): ?>
+                                        <strong style="color:green;">Изпратена</strong>
+                                    <?php elseif ($status === 'failed'): ?>
+                                        <strong style="color:#e74c3c;">Неуспешна</strong>
+                                    <?php else: ?>
+                                        <strong>Смесено</strong>
+                                    <?php endif; ?>
+                                    <div style="font-size:0.85rem; color:#666; margin-top:6px;">
+                                        <?= $counts['sent'] ?> изпратени / <?= $counts['failed'] ?> неуспешни / <?= $counts['pending'] ?> очакващи
+                                    </div>
+                                </td>
+                                <td class="actions">
+                                    <?php if ($img && file_exists($img)): ?>
+                                        <a class="btn" href="<?= htmlspecialchars($img) ?>" download> Изтегли PNG </a>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($inv['is_approved']!='approved' && $_SESSION['user_role'] == 'student'): ?>
                                     <span style="color:#888;">
                                         Достъпно след одобрение
                                     </span>
 
-                                <?php else: ?>
+                                    <?php else: ?>
                                     <form method="POST">
 
                                         <input
@@ -189,13 +200,13 @@ foreach ($invitations as $inv) {
                                             Запази
                                         </button>
                                     </form>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
     </main>
 
 </body>

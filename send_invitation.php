@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 $message = '';
 $selected_recipients = [];
 
-$recipientQuery = $db->prepare(
+$recipient_query = $db->prepare(
     'SELECT id, first_name, last_name, email, role
      FROM users
      WHERE email IS NOT NULL
@@ -24,12 +24,22 @@ $recipientQuery = $db->prepare(
        AND (edition_id = :eid OR role = "teacher")
      ORDER BY CASE WHEN role = "teacher" THEN 0 ELSE 1 END, first_name, last_name'
 );
-$recipientQuery->execute([
-    ':uid' => $_SESSION['user_id'],
-    'eid' => $_SESSION['edition_id']
-]);
 
-$recipient_list = $recipientQuery->fetchAll();
+// check role
+if ($_SESSION['user_role'] === 'student') {
+    $recipient_query->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['edition_id']]
+    );
+}
+else {
+    $recipient_query->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['teacher_edition_id']]
+    );
+}
+
+$recipient_list = $recipient_query->fetchAll();
 $allowedEmails = array_column($recipient_list, 'email');
 
 // send invitation
@@ -175,13 +185,28 @@ $list = $db->prepare(
         presentation_time,
         generated_image_path,
         created_at,
+        edition_id,
         is_approved
     FROM invitations
-    WHERE user_id = :uid
+    WHERE user_id = :uid AND edition_id = :eid
     ORDER BY created_at DESC
 "
 );
-$list->execute(['uid' => $_SESSION['user_id']]);
+
+// check role
+if ($_SESSION['user_role'] === 'student') {
+    $list->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['edition_id']]
+    );
+}
+else {
+    $list->execute([
+        'uid' => $_SESSION['user_id'], 
+        'eid' => $_SESSION['teacher_edition_id']]
+    );
+}
+
 $invitations = $list->fetchAll();
 
 $students = [];
@@ -238,7 +263,7 @@ foreach ($recipient_list as $recipient) {
     <main>
         <h2>Вашите създадени покани</h2> <br>
         <?php if ($message): ?><p><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
-        <?php if (empty($invitations)): ?>
+        <?php if (empty($invitations) && $_SESSION['user_role'] === 'student'): ?>
             <p>Нямате запазени покани.</p>
         <?php else: ?>
             <form method="POST" id="sendSelectionForm">
@@ -307,7 +332,7 @@ foreach ($recipient_list as $recipient) {
                                 </td>
 
                                 <td class="actions">
-                                    <?php if ($inv['is_approved'] === 'approved'): ?>
+                                    <?php if ($inv['is_approved'] === 'approved' || $_SESSION['user_role'] === 'teacher'): ?>
                                         <button class="btn" type="submit" name="invitation_id"
                                             value="<?= (int)$inv['id'] ?>">
                                             Изпрати
