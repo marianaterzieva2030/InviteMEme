@@ -33,10 +33,11 @@ $recipient_list = $recipientQuery->fetchAll();
 $allowedEmails = array_column($recipient_list, 'email');
 
 // send invitation
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) 
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])
     && $_POST['action'] === 'send_selected'
-    && !empty($_POST['invitation_id']))
-{
+    && !empty($_POST['invitation_id'])
+) {
     $invitation_id = (int)$_POST['invitation_id'];
     $selected_recipients = $_POST['recipient_emails'] ?? [];
 
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])
 
             $stmt->execute(['id' => $invitation_id, 'uid' => $_SESSION['user_id']]);
             $inv = $stmt->fetch();
-    
+
             if (!$inv) {
                 $message = 'Поканата не е намерена.';
             } else if ($inv['is_approved'] !== 'approved') {
@@ -178,7 +179,8 @@ $list = $db->prepare(
     FROM invitations
     WHERE user_id = :uid
     ORDER BY created_at DESC
-");
+"
+);
 $list->execute(['uid' => $_SESSION['user_id']]);
 $invitations = $list->fetchAll();
 
@@ -215,7 +217,11 @@ foreach ($recipient_list as $recipient) {
     <header>
         <div class="header-container">
             <div class="logo">
-                <a id="home-link" href="home_student.php">InviteMEme</a>
+                <?php if ((($user['role'] ?? $_SESSION['role'] ?? '') === 'teacher')): ?>
+                    <a id="home-link" href="home_teacher.php">InviteMEme</a>
+                <?php else: ?>
+                    <a id="home-link" href="home_student.php">InviteMEme</a>
+                <?php endif; ?>
             </div>
 
             <nav>
@@ -239,20 +245,20 @@ foreach ($recipient_list as $recipient) {
                 <input type="hidden" name="action" value="send_selected">
                 <div style="margin-bottom: 1rem;">
                     <p style="font-size:0.95rem; color:#555; margin:0.5rem 0;">
-                        Изберете един или повече имейли от всички 
+                        Изберете един или повече имейли от всички
                         регистрирани потребители от този семестър.
                     </p>
                     <label for="recipient_emails"><strong>Получатели:</strong></label>
                     <select id="recipient_emails"
-                            name="recipient_emails[]"
-                            multiple
-                            size="12">
+                        name="recipient_emails[]"
+                        multiple
+                        size="12">
 
                         <optgroup label="Преподаватели">
                             <?php foreach ($recipient_list as $r): ?>
                                 <?php if ($r['role'] === 'teacher'): ?>
                                     <option value="<?= htmlspecialchars($r['email']) ?>">
-                                        <?= htmlspecialchars($r['first_name'].' '.$r['last_name'].' ('.$r['email'].')') ?>
+                                        <?= htmlspecialchars($r['first_name'] . ' ' . $r['last_name'] . ' (' . $r['email'] . ')') ?>
                                     </option>
                                 <?php endif; ?>
                             <?php endforeach; ?>
@@ -262,7 +268,7 @@ foreach ($recipient_list as $recipient) {
                             <?php foreach ($recipient_list as $r): ?>
                                 <?php if ($r['role'] === 'student'): ?>
                                     <option value="<?= htmlspecialchars($r['email']) ?>">
-                                        <?= htmlspecialchars($r['first_name'].' '.$r['last_name'].' ('.$r['email'].')') ?>
+                                        <?= htmlspecialchars($r['first_name'] . ' ' . $r['last_name'] . ' (' . $r['email'] . ')') ?>
                                     </option>
                                 <?php endif; ?>
                             <?php endforeach; ?>
@@ -278,7 +284,7 @@ foreach ($recipient_list as $recipient) {
                         </button>
                     </div>
                 </div>
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -301,23 +307,23 @@ foreach ($recipient_list as $recipient) {
                                 </td>
 
                                 <td class="actions">
-                                <?php if ($inv['is_approved'] === 'approved'): ?>
-                                    <button class="btn" type="submit" name="invitation_id" 
+                                    <?php if ($inv['is_approved'] === 'approved'): ?>
+                                        <button class="btn" type="submit" name="invitation_id"
                                             value="<?= (int)$inv['id'] ?>">
-                                        Изпрати
-                                    </button>
+                                            Изпрати
+                                        </button>
 
-                                <?php elseif ($inv['is_approved'] === 'pending'): ?>
-                                    <span style="color:#e67e22;font-weight:bold;">
-                                        Очаква одобрение
-                                    </span>
+                                    <?php elseif ($inv['is_approved'] === 'pending'): ?>
+                                        <span style="color:#e67e22;font-weight:bold;">
+                                            Очаква одобрение
+                                        </span>
 
-                                <?php else: ?>
-                                    <span style="color:#c0392b;font-weight:bold;">
-                                        Не е одобрена
-                                    </span>
+                                    <?php else: ?>
+                                        <span style="color:#c0392b;font-weight:bold;">
+                                            Не е одобрена
+                                        </span>
 
-                                <?php endif; ?>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -331,7 +337,7 @@ foreach ($recipient_list as $recipient) {
 <script>
     const recipientSelect = document.getElementById("recipient_emails");
 
-    recipientSelect.addEventListener("mousedown", function (e) {
+    recipientSelect.addEventListener("mousedown", function(e) {
         if (e.target.tagName !== "OPTION") {
             return;
         }

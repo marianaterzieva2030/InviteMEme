@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <meta charset="UTF-8">
-    <title>Import Templates ZIP</title>
+    <title>Импортирай шаблони (ZIP)</title>
     <link rel="stylesheet" href="styles/import.css">
 </head>
 
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
     <main>
-        <h2>Import Templates (ZIP)</h2>
+        <h2>Импортирай шаблони (ZIP)</h2>
 
         <?php if (!empty($message['error'])): ?>
             <p style="color:red;">
@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($message) && isset($message['inserted'])): ?>
             <div <div class="white-box">
                 <p>Импортирани: <?= $message['inserted'] ?></p>
-                <p>Пропуснати: <?= $message['skipped'] ?></p>
+                <p>Пропуснати(дублирани): <?= $message['skipped'] ?></p>
             </div>
         <?php endif; ?>
         <div class="white-box">
