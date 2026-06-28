@@ -1,7 +1,16 @@
--- CREATE DATABASE IF NOT EXISTS inviteme;
+ --CREATE DATABASE IF NOT EXISTS inviteme;
 
 
--- USE inviteme;
+ --USE inviteme;
+ 
+ CREATE TABLE IF NOT EXISTS course_editions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(10) NOT NULL UNIQUE,
+    title VARCHAR(100) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    facebook_url VARCHAR(255) NULL,
+    moodle_url VARCHAR(255) NULL
+);
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -78,11 +87,3 @@ CREATE TABLE IF NOT EXISTS invitation_recipients (
     -- UNIQUE (invitation_id, recipient_email)
 );
 
-CREATE TABLE IF NOT EXISTS course_editions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(10) NOT NULL UNIQUE,
-    title VARCHAR(100) NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
-    facebook_url VARCHAR(255) NULL,
-    moodle_url VARCHAR(255) NULL
-);

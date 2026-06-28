@@ -42,6 +42,16 @@ if ($imageData === false) {
     exit;
 }
 
+$editionId =
+    $_SESSION['teacher_edition_id']
+    ?? $_SESSION['student_edition_id']
+    ?? null;
+
+if (!$editionId) {
+    header('Location: ../create_invitation.php?error=noedition');
+    exit;
+}
+
 $uploadDir = __DIR__ . '/../uploads/custom/';
 
 if (!is_dir($uploadDir)) {
@@ -76,7 +86,7 @@ $stmt = $db->prepare("INSERT INTO invitations (user_id, edition_id, template_id,
                      VALUES (:user_id, :edition_id, :template_id, :title, :presentation_date, :presentation_time, :room, :description, :generated_image_path)");
 $stmt->execute([
     ':user_id' => $_SESSION['user_id'],
-    ':edition_id' => $_SESSION['edition_id'],
+    ':edition_id' => $editionId,
     ':template_id' => $template_id,
     ':title' => $title,
     ':presentation_date' => $presentation_date,

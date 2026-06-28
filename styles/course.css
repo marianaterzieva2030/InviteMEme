@@ -54,7 +54,8 @@ nav a,
     transition: 0.3s;
 }
 
-nav a:hover, #active-menu {
+nav a:hover,
+#active-menu {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -115,11 +116,11 @@ main {
     background: var(--turquoise);
 }
 
-.dropdown{
+.dropdown {
     position: relative;
 }
 
-.dropdown-menu{
+.dropdown-menu {
     position: absolute;
     top: 100%;
     left: 0;
@@ -127,28 +128,28 @@ main {
     min-width: 220px;
     background: white;
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
     display: none;
     padding: 8px 0;
     z-index: 100;
 }
 
-.dropdown:hover .dropdown-menu{
+.dropdown:hover .dropdown-menu {
     display: block;
 }
 
-.dropdown-menu li{
+.dropdown-menu li {
     list-style: none;
 }
 
-.dropdown-menu a{
+.dropdown-menu a {
     display: block;
     color: #333;
     padding: 10px 18px;
     text-decoration: none;
 }
 
-.dropdown-menu a:hover{
+.dropdown-menu a:hover {
     background: #cbf3f0;
 }
 
@@ -213,7 +214,7 @@ img.template-preview {
 }
 
 
-.filters{
+.filters {
     display: flex;
     gap: 18px;
     align-items: flex-end;
@@ -221,13 +222,13 @@ img.template-preview {
     margin-bottom: 25px;
 }
 
-.filters label{
+.filters label {
     display: block;
     margin-bottom: 6px;
     font-weight: 600;
 }
 
-.filters select{
+.filters select {
     min-width: 180px;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -235,21 +236,21 @@ img.template-preview {
     background: white;
 }
 
-.filters button{
+.filters button {
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: var(--light-orange);
-}
-
-.filters button:hover{
     background-color: var(--orange);
 }
 
+.filters button:hover {
+    background-color: var(--turquoise);
+}
 
 
-.settings-card{
+
+.settings-card {
     max-width: 700px;
     margin: auto;
     background: white;
@@ -258,7 +259,7 @@ img.template-preview {
     box-shadow: var(--shadow);
 }
 
-.settings-card label{
+.settings-card label {
     display: block;
     margin-top: 18px;
     margin-bottom: 6px;
@@ -266,28 +267,28 @@ img.template-preview {
 }
 
 .settings-card input[type=text],
-.settings-card input[type=url]{
+.settings-card input[type=url] {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 10px;
 }
 
-.checkbox{
+.checkbox {
     display: flex !important;
     align-items: center;
     gap: 10px;
     margin-top: 25px;
 }
 
-.checkbox input{
+.checkbox input {
     width: auto;
 }
 
-.settings-card button{
+.settings-card button {
     display: flex;
     float: right;
-    margin-top:10px;
+    margin-top: 10px;
     background: var(--orange);
     color: white;
     border: none;
@@ -300,7 +301,7 @@ img.template-preview {
     background: var(--turquoise);
 }
 
-.success-message{
+.success-message {
     background: #cbf3f0;
     color: var(--turquoise);
     margin-bottom: 20px;

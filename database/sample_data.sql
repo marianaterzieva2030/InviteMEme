@@ -1,6 +1,6 @@
 -- Sample data for InviteME database. Insert through 'SQL' menu in XAMPP's phpmyadmin.
 
-USE DATABASE();
+USE inviteme;
 
 
 INSERT INTO course_editions (code, title, is_active) VALUES
@@ -17,7 +17,7 @@ INSERT INTO users
     role,
     major,
     study_year,
-    edition_id,
+    edition_id
 )
 VALUES
 (

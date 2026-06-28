@@ -47,17 +47,23 @@ $templates = $q->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Управление на шаблони</title>
     <link rel="stylesheet" href="styles/edit_templates.css">
     <style>
-        .actions form{ display:inline-block; margin:0 4px; }
-        .filter-links { 
-            margin-top: 1rem;
-            margin-bottom:1rem; 
+        .actions form {
+            display: inline-block;
+            margin: 0 4px;
         }
+
+        .filter-links {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
         .filter-links a {
             text-decoration: underline;
             color: black;
@@ -66,11 +72,35 @@ $templates = $q->fetchAll();
             border-radius: 6px;
             transition: 0.3s;
         }
+
         .filter-links a:hover {
             color: var(--orange);
         }
+
+        .import-export-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: var(--orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .action-btn:hover {
+            background: var(--turquoise);
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -98,40 +128,83 @@ $templates = $q->fetchAll();
             <a href="edit_templates.php?type=meme">Meme</a>
         </div>
 
+        <div class="import-export-buttons">
+            <button type="submit" form="exportForm" class="btn">
+                Export JSON
+            </button>
+
+            <a href="import_templates.php" class="btn">
+                Import JSON
+            </a>
+        </div>
+
         <?php if (empty($templates)): ?>
             <p>Няма шаблони.</p>
         <?php else: ?>
-            <table>
-                <thead><tr><th>Име</th><th>Тип</th><th>Изображение</th><th>Активен</th><th>Действия</th></tr></thead>
-                <tbody>
-                <?php foreach ($templates as $t): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($t['name']); ?></td>
-                        <td><?php echo htmlspecialchars($t['type']); ?></td>
-                        <td><?php 
-                            if (!empty($t['image_path'])): 
-                                $img = $t['image_path']; 
-                                if (file_exists($img)): ?>
-                                    <img src="<?php echo htmlspecialchars($img); ?>" style="height:60px;" alt="tpl">
-                                    <?php else: ?>-<?php endif; else: ?>-<?php endif; ?></td>
-                        <td><?php echo $t['is_active'] ? 'Да' : 'Не'; ?></td>
-                        <td class="actions">
-                            <form method="POST">
-                                <input type="hidden" name="action" value="set_active">
-                                <input type="hidden" name="id" value="<?php echo (int)$t['id']; ?>">
-                                <select name="is_active">
-                                    <option value="1" <?php echo $t['is_active'] ? 'selected' : ''; ?>>Активен</option>
-                                    <option value="0" <?php echo !$t['is_active'] ? 'selected' : ''; ?>>Неактивен</option>
-                                </select>
-                                <button type="submit">Задай</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+            <form method="POST" action="export_templates.php" id="exportForm">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th>Име</th>
+                            <th>Тип</th>
+                            <th>Изображение</th>
+                            <th>Активен</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php foreach ($templates as $t): ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="template_ids[]" value="<?= $t['id'] ?>">
+                                </td>
+
+                                <td><?= htmlspecialchars($t['name']) ?></td>
+                                <td><?= htmlspecialchars($t['type']) ?></td>
+
+                                <td>
+                                    <?php if (!empty($t['image_path']) && file_exists($t['image_path'])): ?>
+                                        <img src="<?= htmlspecialchars($t['image_path']) ?>" style="height:60px;">
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+
+                                <td><?= $t['is_active'] ? 'Да' : 'Не' ?></td>
+
+                                <td class="actions">
+                                    <form method="POST">
+                                        <input type="hidden" name="action" value="set_active">
+                                        <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
+                                        <select name="is_active">
+                                            <option value="1" <?= $t['is_active'] ? 'selected' : '' ?>>Активен</option>
+                                            <option value="0" <?= !$t['is_active'] ? 'selected' : '' ?>>Неактивен</option>
+                                        </select>
+                                        <button type="submit">Задай</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </form>
         <?php endif; ?>
 
     </main>
 </body>
+
 </html>
+<script>
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const checked = this.checked;
+
+        document.querySelectorAll('input[name="template_ids[]"]').forEach(cb => {
+            cb.checked = checked;
+        });
+    });
+</script>

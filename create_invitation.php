@@ -12,6 +12,8 @@ $db = (new DatabaseConnection())->getConnection();
 $stmtUser = $db->prepare("SELECT first_name, last_name, faculty_number FROM users WHERE id = :id LIMIT 1");
 $stmtUser->execute([':id' => $_SESSION['user_id']]);
 $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+$isTeacher = ($_SESSION['user_role'] === 'teacher');
+$faculty = $user['faculty_number'] ?? '';
 
 $stmt = $db->prepare("SELECT id, name, image_path, type, description FROM invitation_templates WHERE is_active = 1");
 $stmt->execute();
@@ -196,7 +198,9 @@ if (isset($_GET['error'])) {
                     <p>Час: <span id="pTime"></span></p>
                     <p>Зала: <span id="pRoom"></span></p>
                     <p>Презентиращ: <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></p>
-                    <p>Факултетен номер: <?= htmlspecialchars($user['faculty_number'] ?? '') ?></p>
+                    <?php if (!$isTeacher): ?>
+                        <p>Факултетен номер: <?= htmlspecialchars($faculty) ?></p>
+                    <?php endif; ?>
                     <p>Описание: <span id="pDesc"></span></p>
                 </div>
             </div>

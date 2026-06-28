@@ -114,7 +114,7 @@ foreach ($invitations as $inv) {
                                     </div>
                                 </td>
                                 <td class="actions">
-                                    <?php if ($img && file_exists($img)): ?>
+                                    <?php if ($img && file_exists(__DIR__ . '/' . $img)): ?>
                                         <a class="btn" href="<?= htmlspecialchars($img) ?>" download>Изтегли PNG</a>
                                     <?php else: ?>
                                         -

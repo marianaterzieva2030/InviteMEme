@@ -1,0 +1,134 @@
+:root {
+    --orange: #ff9f1c;
+    --light-orange: #ffbf69;
+    --white: #ffffff;
+    --light-cyan: #cbf3f0;
+    --turquoise: #2ec4b6;
+
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: var(--light-cyan);
+    color: #333;
+}
+
+header {
+    background: var(--orange);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+nav a,
+#home-link {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+nav a:hover,
+#active-menu {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--orange);
+}
+
+.white-box {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.white-box p {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.success {
+    color: var(--turquoise);
+    font-weight: 600;
+}
+
+.warning {
+    color: var(--orange);
+    font-weight: 600;
+}
+
+.error {
+    color: red;
+    font-weight: 600;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--turquoise);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: var(--shadow);
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: var(--orange);
+}
+
+button {
+    background: var(--orange);
+    color: var(--white);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: var(--shadow);
+}
+
+button:hover {
+    background: var(--turquoise);
+}
+
+form {
+    text-align: center;
+}

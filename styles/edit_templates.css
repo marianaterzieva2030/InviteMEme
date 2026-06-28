@@ -118,6 +118,11 @@ main .filter-links a:hover, main .filter-links .active {
     line-height: 1.5;
 }
 
+button.btn,
+a.btn {
+    font: inherit;
+}
+
 .btn {
     display: inline-block;
     background: var(--orange);
@@ -126,7 +131,8 @@ main .filter-links a:hover, main .filter-links .active {
     padding: 0.75rem 1.2rem;
     border-radius: 8px;
     font-weight: 600;
-    transition: 0.3s;
+    transition: 0.3s; 
+    border: none; 
 }
 
 .btn:hover {
