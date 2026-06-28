@@ -60,6 +60,9 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                         <ul class="dropdown-menu">
                             <li><a href="course_users.php">Потребители</a></li>
                             <li><a href="course_stats.php">Статистики</a></li>
+                            <li><a href="create_invitation.php">Създаване на покана</a></li>
+                            <li><a href="send_invitation.php">Изпращане</a></li>
+                            <li><a href="status.php">Статус</a></li>
                             <li><a href="course_settings.php">Настройки</a></li>
                         </ul>
 
@@ -67,7 +70,6 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
 
                     <li><a href="create_template.php">Създаване на шаблон</a></li>
                     <li><a href="edit_templates.php">Управление на шаблони</a></li>                        
-                    <li><a href="create_invitation.php">Създаване на покана</a></li>
                     <li><a href="profile.php">Профил</a></li>
                     <li><a href="auth/logout.php">Изход</a></li>
                 </ul>
@@ -102,6 +104,31 @@ $_SESSION['teacher_edition_title'] = $edition['title'];
                     филтри по специалност и курс.
                 </p>
                 <a href="course_stats.php" class="btn">Вижте</a>
+            </div>
+
+            <div class="feature-card">
+                <h3>Създаване на покана</h3>
+                <p>
+                    Създавайте покани по Ваш вкус!
+                </p>
+                <a href="create_invitation.php" class="btn">Създайте</a>
+            </div>
+
+            <div class="feature-card">
+                <h3>Изпращане на покани</h3>
+                <p>
+                    Изпращайте поканите до студентите.
+                </p>
+                <a href="send_invitation.php" class="btn">Вижте</a>
+            </div>
+
+            <div class="feature-card">
+                <h3>Статус на покани</h3>
+                <p>
+                    Проверете получени ли са Вашите 
+                    запазени покани от студентите.
+                </p>
+                <a href="status.php" class="btn">Вижте</a>
             </div>
 
             <div class="feature-card">

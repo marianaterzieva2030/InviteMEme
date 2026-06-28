@@ -95,6 +95,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <ul class="dropdown-menu">
                             <li><a href="#">Потребители</a></li>
                             <li><a href="course_stats.php">Статистики</a></li>
+                            <li><a href="create_invitation.php">Създаване на покана</a></li>
+                            <li><a href="send_invitation.php">Изпращане</a></li>
+                            <li><a href="status.php">Статус</a></li>
                             <li><a href="course_settings.php">Настройки</a></li>
                         </ul>
 
