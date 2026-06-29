@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input
                     type="url"
                     name="moodle_url"
-                    value="<?= htmlspecialchars($edition['moodle_url']) ?? '' ?>">
+                    value="<?= htmlspecialchars($edition['moodle_url'] ?? '') ?>">
 
                 <label class="checkbox">
 

@@ -9,6 +9,16 @@ if (empty($_SESSION['user_id'])) {
 require "database/connect_db.php";
 $db = (new DatabaseConnection())->getConnection();
 
+$edition_stmt = $db->prepare("
+    SELECT ce.facebook_url
+    FROM course_editions ce
+    JOIN users u ON u.edition_id = ce.id
+    WHERE u.id = :uid
+");
+
+$edition_stmt->execute([':uid' => $_SESSION['user_id']]);
+$facebook_url = $edition_stmt->fetchColumn() ?: '';
+
 $stmtUser = $db->prepare("SELECT first_name, last_name, faculty_number, role FROM users WHERE id = :id LIMIT 1");
 $stmtUser->execute([':id' => $_SESSION['user_id']]);
 $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -233,6 +243,10 @@ if (isset($_GET['error'])) {
 
         </div>
     </div>
+
+    <script>
+        const facebookUrl = <?= json_encode($facebook_url) ?>;
+    </script>
 
     <script src="javascript/create_invitation.js"></script>
 

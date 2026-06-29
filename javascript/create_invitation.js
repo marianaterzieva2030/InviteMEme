@@ -319,7 +319,7 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
 });
 
 shareBtn.addEventListener("click", function () {
-    window.open("https://www.facebook.com/groups/1682521323128544", "_blank");
+    window.open(facebookUrl, "_blank");
 });
 
 updateInfoBox();
